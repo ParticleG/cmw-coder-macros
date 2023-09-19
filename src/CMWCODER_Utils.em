@@ -117,7 +117,7 @@ macro strstr(str1,str2) {
     len1 = strlen(str1)
     len2 = strlen(str2)
     if ((len1 == 0) || (len2 == 0)) {
-        return 0xffffffff
+      return 0xffffffff
     }
 
     while ( i < len1) {
