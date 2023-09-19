@@ -17,28 +17,22 @@ macro Completion_updateContent(content) {
 }
 
 macro constructInstmp(insstr, index) {
-  if (index >= strlen(insstr)-2)
-  {
+  if (index >= strlen(insstr)-2) {
     return insstr
   }
-  if (insstr[index] == "\\" || insstr[index] == "*" || insstr[index] == "/")
-  {
+
+  if (insstr[index] == "\\" || insstr[index] == "*" || insstr[index] == "/") {
     return insstr
-  }
-  else
-  {
+  } else {
     chartmp = insstr[index]
     suffinsstr = strmid(insstr, index+1, strlen(insstr))
     //msg("suffinsstr: " # suffinsstr)
-    if (index == 0)
-    {
+    if (index == 0) {
       return cat(cat(chartmp,"/*"),suffinsstr)
-    }
-    else
-    {
+    } else {
       preinsstr = strmid(insstr, 0, index)
       //msg("preinsstr: " # preinsstr)
-      tmp = cat(cat(cat(cat(preinsstr, "*/"),chartmp),"/*"),suffinsstr)
+      tmp = preinsstr # "*/" # chartmp # "/*" # suffinsstr
       //msg("tmp" # tmp)
       return tmp
     }
@@ -52,12 +46,12 @@ macro constructIns(currentLine, insertion, index) {
     suffixline = strmid(currentLine, index, currentLineLength)
   } else {
     prefixline = strmid(currentLine, 0, currentLineLength)
-    suffixline = ""
+    suffixline = nil
   }
 
   insstrIndex = 0
   suffixIndex = 0
-  tembuf = ""
+  tembuf = nil
   inserttmp = insertion
   while (insstrIndex < strlen(insertion) && suffixIndex < strlen(suffixline)) {
     //msg("insstrchar " # insertion[insstrIndex] # "suffixchar:  " # suffixline[suffixIndex])
@@ -74,7 +68,6 @@ macro constructIns(currentLine, insertion, index) {
     //msg("str: " # str " tembuf: " # tembuf)
   }
 
-  // return cat(prefixline, cat(inserttmp, tembuf))
   return prefixline # "/*" # insertion # "*/" # tembuf
 }
 
@@ -108,7 +101,7 @@ macro Completion_insertLine(inputContent) {
     Cache.suf = strmid(curLineBuf, currentCharactor, strlen(curLineBuf))
   } else {
     Cache.pre = strmid(curLineBuf, 0, strlen(curLineBuf))
-    Cache.suf = ""
+    Cache.suf = nil
   }
 
   Cache_setRange(
@@ -172,13 +165,13 @@ macro Completion_cancel() {
   hCurrentBuf = GetCurrentBuf()
   cursor = Utils_getCurrentCursor()
   if (hCurrentBuf) {
-    if (Cache.completebuf != "") {
-	  	PutBufLine(
-	  	  hCurrentBuf,
-	      Cache.rangeStartLine,
-	      Cache.pre # Cache.curbuf # Cache.suf
-	    )
-	    SetWndSel(hCurrentBuf, cursor)
+    if (Cache.completebuf != nil) {
+      PutBufLine(
+        hCurrentBuf,
+        Cache.rangeStartLine,
+        Cache.pre # Cache.curbuf # Cache.suf
+      )
+      SetWndSel(hCurrentBuf, cursor)
     } else {
       return false
     }
@@ -196,12 +189,12 @@ macro Completion_cancel_entry(){
   hCurrentBuf = GetCurrentBuf()
   cursor = Utils_getCurrentCursor()
   if (hCurrentBuf) {
-    if (Cache.completebuf != "") {
-	  	PutBufLine(
-	  	  hCurrentBuf,
-	      cursor.lnFirst
-	      Cache.suf
-	    )
+    if (Cache.completebuf != nil) {
+      PutBufLine(
+        hCurrentBuf,
+        cursor.lnFirst
+        Cache.suf
+      )
       SetWndSel(hCurrentBuf, cursor)
     } else {
       return false
@@ -222,12 +215,12 @@ macro Completion_cancel_backspace_entry(){
   pre = strmid(GetBufLine(hCurrentBuf, cursor.lnFirst), 0, cursor.ichFirst)
   // msg(pre # Cache.suf)
   if (hCurrentBuf) {
-    if (Cache.completebuf != "") {
-	  	PutBufLine(
-	  	  hCurrentBuf,
+    if (Cache.completebuf != nil) {
+      PutBufLine(
+        hCurrentBuf,
         cursor.lnFirst
-	      pre # Cache.suf
-	    )
+        pre # Cache.suf
+      )
       SetWndSel(hCurrentBuf, cursor)
     } else {
       return false
@@ -258,11 +251,3 @@ macro Completion_writeInfo(sFile) {
 
   FS_processEditorInfo(editorInfo)
 }
-
-
-
-
-
-
-
-

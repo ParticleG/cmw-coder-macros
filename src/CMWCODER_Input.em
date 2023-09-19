@@ -1,43 +1,28 @@
 macro Input_init() {
   global Input
 
-  //msg("Input_init")
-
   Input.keycode = 0
-  Input.lastTime = ""
-  Input.time = ""
+  Input.lastTime = nil
+  Input.time = nil
   input.type = "none"
 }
 
-// macro Input_waitKey() {
-//   global Input
-
-//   Input.keycode = GetKey()
-//   Input.time = Utils_DateTimeNow()
-//   if (CmdFromKey(Input.keycode) != nil) {
-//     Input.type = "command"
-//   } else {
-//     Input.type = "normal"
-//   }
-// }
-
 macro Input_read(){
   global Input
-  if (GetReg("keycode") == nil)
-  {
+
+  if (GetReg("keycode") == nil) {
     return nil
   }
+
   Input.keycode = Ascii(GetReg("keycode"))
-  //msg("Input.keycode " # Input.keycode)
+  // msg("Input.keycode " # Input.keycode)
   SetReg("keycode", nil)
-  //msg(Input.keycode)
+  // msg(Input.keycode)
   Input.time = Utils_DateTimeNow()
- // msg("Input.time  " # Input.time)
-  if (Input.keycode == 27)
-  {
+  // msg("Input.time  " # Input.time)
+  if (Input.keycode == 27) {
     Input.type = "command"
-  }
-  else if (CmdFromKey(Input.keycode) != nil) {
+  } else if (CmdFromKey(Input.keycode) != nil) {
     //msg( "command")
     Input.type = "command"
   } else {
@@ -52,14 +37,14 @@ macro Input_read(){
 
 macro Input_saveTime() {
   global Input
-  //msg("Input.lastTime: "# Input.lastTime # "  Input.time: "# Input.time)
+
   Input.lastTime = Input.time
 }
 
 macro Input_isNewTime() {
   global Input
 
-  return Input.lastTime == "" || Input.time != Input.lastTime
+  return Input.lastTime == nil || Input.time != Input.lastTime
 }
 
 macro Input_isCommand() {
@@ -92,16 +77,13 @@ macro Input_isEnter() {
   return Input.keycode == 13
 }
 
-macro Input_runCmd()
-{
+macro Input_runCmd() {
   global Input
 
-  if (Input_isCommand())
-  {
+  if (Input_isCommand()) {
     cmd = CmdFromKey(Input.keycode)
     index = strstr(cmd, "...")
-    if (index != 0xffffffff)
-    {
+    if (index != 0xffffffff) {
       cmd=strmid(cmd, 0, index)
     }
     RunCmd(cmd)
@@ -122,19 +104,13 @@ macro Input_writeBack() {
   cursor.ichFirst = cursor.ichFirst + 1
   cursor.ichLim =  cursor.ichLim + 1
   line = Utils_getCurrentLine()
-  if (!Config_isNew())
-  {
+  if (!Config_isNew()) {
     SetBufSelText(curBuf, CharFromKey(Input.keycode))
     SetWndSel(curBuf, cursor)
-  }
-  else
-  {
-    if (line != "")
-    {
+  } else {
+    if (line != nil) {
        SetBufSelText(curBuf, CharFromKey(Input.keycode))
-    }
-    else
-    {
+    } else {
       PutBufLine(curBuf, cursor.lnFirst, CharFromKey(Input.keycode))
       SetWndSel(curBuf, cursor)
     }
@@ -147,4 +123,3 @@ macro Input_Clear() {
 
   Input.keycode = 0
 }
-

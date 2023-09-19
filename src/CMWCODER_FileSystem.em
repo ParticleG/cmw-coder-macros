@@ -25,7 +25,6 @@ macro _FS_ensurePath(path) {
     ClearBuf(hFile)
     SaveBuf(hFile)
   }
-  
   CloseBuf(hFile)
 }
 
@@ -46,7 +45,6 @@ macro FS_processCompletionGenerated() {
     }
     CloseBuf(hFile)
   }
-
   return data
 }
 

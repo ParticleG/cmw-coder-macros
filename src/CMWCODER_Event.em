@@ -10,45 +10,29 @@ event DocumentClose(sFile) {
   }
 }
 
-// macro Macro_RecordInput() {
-//   global isInit
-//   if (isInit == nil)
-//   {
-//     return nil
-//   }
-//   Input_waitKey()
-// }
-
 macro Macro_CheckComplete() {
   global position
   global Cache
   global Input
   global isInit
-  if (isInit == nil)
-  {
+  if (isInit == nil) {
     return nil
   }
-  // if (Input_isNone()) {
-  //   return nil
-  // }
 
   if (Input_read() != nil) {
-     //msg("isnewtime" # Input_isNewTime())
-    //msg("1")
     Input_saveTime()
     if (Input_isCommand()) {
         // msg("1.1")
       if (Input_isTab()) {
         // msg("1.1.1")
         // msg("Cache.completebuf: " # Cache.completebuf)
-        if(Cache.completebuf != nil) {
+        if (Cache.completebuf != nil) {
           // msg("1.1.1.1")
           Completion_Accept()
         } else {
           // msg("1.1.1.2")
-          //Input_runCmd()
         }
-      } else if(Input_isEscape()) {
+      } else if (Input_isEscape()) {
         Completion_cancel()
         Cache_clearString()
       } else if (Input_isEnter()) {
@@ -59,17 +43,15 @@ macro Macro_CheckComplete() {
           Cache_clearString()
           FS_processCompletionReaction(false)
         }
-        // Input_runCmd()
         Completion_writeInfo(GetBufName(GetCurrentBuf()))
       } else if (Input_isBackspace()) {
-        // Input_runCmd()
-        if(Cache.completebuf != nil) {
+        if (Cache.completebuf != nil) {
           hCurrentBuf = GetCurrentBuf()
           if (GetBufLineCount(hCurrentBuf) != Cache.maxLine) {
             Completion_cancel_backspace_entry()
             Cache_clearString()
             FS_processCompletionReaction(false)
-          } else if (Cache_isHit() == true){
+          } else if (Cache_isHit() == true) {
             // msg("1.1.3.1")
           } else {
             Completion_cancel()
@@ -77,20 +59,13 @@ macro Macro_CheckComplete() {
             FS_processCompletionReaction(false)
           }
         }
-
-      } else {
-      //  msg("1.1.4")
-        //Input_runCmd()
       }
     } else {
       // msg("1.2")
-      //Input_writeBack()
-      if (Cache_isHit() == true)
-      {
+      if (Cache_isHit() == true) {
         // msg("Cache_isHit() " #  Cache_isHit())
         // msg("1.2.1")
-      }
-      else{
+      } else {
         // msg("1.2.2")
         Completion_cancel()
         Cache_clearString()
@@ -99,37 +74,30 @@ macro Macro_CheckComplete() {
       }
     }
   } else {
-    //msg("2")
+    // msg("2")
     cursor = Utils_getCurrentCursor()
     if (position.line == cursor.lnFirst && position.column == cursor.ichFirst) {
-      //msg("2.1")
-      // 一级缓存
-      if (Cache_isHit() == true)
-      {
-        //  msg("2.1.1")
-
-      }
-      else{
+      // msg("2.1")
+      // 1st layer cache
+      if (Cache_isHit() == true) {
+        // msg("2.1.1")
+      } else {
         completion = FS_processCompletionGenerated()
         // msg("completion:'@completion@'")
         if (completion!= nil) {
           Completion_insertLine(completion)
         }
       }
-
     } else {
       // msg("2.2")
       position.line = cursor.lnFirst
       position.column = cursor.ichFirst
-      if (Cache_isHit() == true)
-      {
-          //  msg("2.2.1")
-
-      }
-      else{
-         Completion_cancel()
-         Cache_clearString()
-         FS_processCompletionReaction(false)
+      if (Cache_isHit() == true) {
+        // msg("2.2.1")
+      } else {
+        Completion_cancel()
+        Cache_clearString()
+        FS_processCompletionReaction(false)
       }
     }
   }

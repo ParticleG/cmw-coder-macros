@@ -14,10 +14,10 @@ macro Cache_init() {
 macro Cache_clearString() {
   global Cache
 
-  Cache.completebuf = ""
-  Cache.pre = ""
-  Cache.suf = ""
-  Cache.curbuf = ""
+  Cache.completebuf = nil
+  Cache.pre = nil
+  Cache.suf = nil
+  Cache.curbuf = nil
 }
 
 macro Cache_isHit() {
@@ -25,66 +25,52 @@ macro Cache_isHit() {
   // msg("Cache_isHit")
   currentCursor = Utils_getCurrentCursor()
   currentLine = Utils_getCurrentLine()
-  
-  if (currentCursor == nil ||
-      currentLine == nil) {
+
+  if (currentCursor == nil || currentLine == nil) {
     return false
   }
-  //msg("currentCursor.ichLim: " # currentCursor.ichLim # " Cache.maxChar: " # Cache.maxChar )
-  if (Cache.completebuf == nil ||
-      currentCursor.lnFirst != Cache.rangeStartLine //strlen(currentLine) == Cache.maxChar
-      ) {
+  // msg("currentCursor.ichLim: " # currentCursor.ichLim # " Cache.maxChar: " # Cache.maxChar )
+  if (Cache.completebuf == nil || currentCursor.lnFirst != Cache.rangeStartLine) {
     return false
   }
   note_index = strstr(currentLine, "/*")
   if (note_index != 0xffffffff) {
-    if (note_index < currentCursor.ichFirst)
-    {
+    if (note_index < currentCursor.ichFirst) {
       return false
     }
   }
-  curbuf = ""
+  curbuf = nil
   if (currentCursor.ichFirst > Cache.rangeStartChar) {
     curbuf = strmid(currentLine, Cache.rangeStartChar, currentCursor.ichFirst)
-  } else if(currentCursor.ichFirst < Cache.rangeStartChar) {
-  	//if (Cache.pre != "")
-  	//{
-  	//  Cache.pre = strmid(Cache.pre, 0, currentCursor.ichFirst)
-  	//}
-  	return false
+  } else if (currentCursor.ichFirst < Cache.rangeStartChar) {
+    // if (Cache.pre != nil) {
+    //   Cache.pre = strmid(Cache.pre, 0, currentCursor.ichFirst)
+    // }
+    return false
   }
-
   //  msg(curbuf)
   Cache.curbuf = curbuf
-  //  msg("curbuf: " # curbuf)
+  // msg("curbuf: " # curbuf)
   // lineSeperatorIndex = Utils_findFirst(Cache.completebuf, "\\r\\n")
   // if (lineSeperatorIndex == invalid) {
   //   completebuf = Cache.completebuf
   // } else {
   //   completebuf = strmid(Cache.completebuf, 0, lineSeperatorIndex)
   // }
-  if(ComparePre(Cache.completebuf, curbuf))
-  {
+  if (ComparePre(Cache.completebuf, curbuf)) {
     completebuf = strmid(Cache.completebuf, strlen(curbuf), strlen(Cache.completebuf))
-    if (completebuf != "")
-    {
-    	tempbuf = Cache.pre # Cache.curbuf # "/*" # completebuf # "*/" #Cache.suf
+    if (completebuf != nil) {
+      tempbuf = Cache.pre # Cache.curbuf # "/*" # completebuf # "*/" #Cache.suf
+    } else {
+      tempbuf = Cache.pre # Cache.curbuf # Cache.suf
     }
-    else
-    {
-    	tempbuf = Cache.pre # Cache.curbuf # Cache.suf
-    }
-  }
-  else if(currentCursor.ichFirst == Cache.rangeStartChar)
-  {
+  } else if (currentCursor.ichFirst == Cache.rangeStartChar) {
     tempbuf = Cache.pre # Cache.curbuf # "/*" # Cache.completebuf # "*/" #Cache.suf
-  }
-  else
-  {
+  } else {
     return false
   }
   hCurrentBuf = GetCurrentBuf()
-  //msg(currentCursor.lnFirst # "    " # curlinebuf)
+  // msg(currentCursor.lnFirst # "    " # curlinebuf)
   PutBufLine(hCurrentBuf, currentCursor.lnFirst, tempbuf)
   SetWndSel(hCurrentBuf, currentCursor)
   return true
@@ -104,7 +90,9 @@ macro Cache_isSameCursor() {
 
   cursor = Utils_getCurrentCursor()
   if (cursor != nil) {
-    return (Cache.rangeStartLine == cursor.lnFirst &&
-            Cache.rangeStartChar == cursor.ichFirst)
+    return (
+      Cache.rangeStartLine == cursor.lnFirst &&
+      Cache.rangeStartChar == cursor.ichFirst
+    )
   }
 }

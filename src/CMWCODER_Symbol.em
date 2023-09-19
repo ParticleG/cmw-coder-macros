@@ -27,15 +27,11 @@ macro Symbol_get() {
   return symbol
 }
 
-macro procSymbolName(symbol_name)
-{
+macro procSymbolName(symbol_name) {
   index = strstr(symbol_name, ".") 
-  if (index != 0xffffffff)
-  {
+  if (index != 0xffffffff) {
     return strmid(symbol_name, index, strlen(symbol_name))
-  }
-  else
-  {
+  } else {
     return symbol_name
   }
 }

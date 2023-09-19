@@ -1,20 +1,19 @@
-macro Utils_findFirst(left, right)
-{
-    leftIndex = 0
-    while (leftIndex < strlen(left) - strlen(right) + 1) {
-      rightIndex = 0
-      while (rightIndex < strlen(right)) {
-        if (left[leftIndex + rightIndex] != right[rightIndex]) {
-          break
-        }
-        if (rightIndex == strlen(right) - 1) {
-          return leftIndex;
-        }
-        rightIndex = rightIndex + 1
+macro Utils_findFirst(left, right) {
+  leftIndex = 0
+  while (leftIndex < strlen(left) - strlen(right) + 1) {
+    rightIndex = 0
+    while (rightIndex < strlen(right)) {
+      if (left[leftIndex + rightIndex] != right[rightIndex]) {
+        break
       }
-      leftIndex = leftIndex + 1
+      if (rightIndex == strlen(right) - 1) {
+        return leftIndex;
+      }
+      rightIndex = rightIndex + 1
     }
-    return invalid
+    leftIndex = leftIndex + 1
+  }
+  return invalid
 }
 
 macro strcmp(left, right) {
@@ -27,55 +26,47 @@ macro strcmp(left, right) {
   return 0
 }
 
-macro sleep(int)
-{
+macro sleep(int) {
   int= int * 250
   cout = 0
-  while (cout < int)
-  {
+  while (cout < int) {
     cout = cout + 1
   }
 }
 
-macro ComparePre(str, substr)
-{
+macro ComparePre(str, substr) {
   sublen = strlen(substr)
   strlen = strlen(str)
-  
-  if (strlen < sublen)
-  {
+
+  if (strlen < sublen) {
     return 0
   }
   tmpbuf = strmid(str, 0, sublen)
   //msg("ComparePre  tmpbuf: " # tmpbuf # " substr: " # substr)
-  if (tmpbuf == substr)
-  { 
+  if (tmpbuf == substr) {
     return 1
-  }
-  else
-  {
+  } else {
     return 0
   }
-  
 }
 
 macro calcuSizes(sFile) {
   lenth = strlen(sFile)
   sizes = "000" + lenth
-  if (strlen(sizes)<3) {
+  if (strlen(sizes) < 3) {
     sizes = cat("0", sizes)
   }
   return sizes
 }
 
-macro Utils_isCLangFile(sFile)
-{
-  return (Utils_findFirst(sFile, ".c") != invalid ||
-          Utils_findFirst(sFile, ".h") != invalid)
+macro Utils_isCLangFile(sFile) {
+  return (
+    Utils_findFirst(sFile, ".c") != invalid ||
+    Utils_findFirst(sFile, ".h") != invalid
+  )
 }
 
-macro cutstr(source, cutter)
-{
+macro cutstr(source, cutter) {
   cutIndex = Utils_findFirst(source, cutter);
   if (cutIndex == invalid) {
     return source
@@ -100,22 +91,17 @@ macro Utils_getCurrentLine() {
   }
 }
 
-macro isEnter(Cache)
-{
-	if (Cache.completebuf != "")
-	{	
-		//msg("isEnter(Cache)")
-		CurrentCursor = Utils_getCurrentCursor()
-		if(CurrentCursor.lnFirst > Cache.rangeStartLine)
-		{
-			return 1
-		}
-		else if(CurrentCursor.lnFirst < Cache.rangeStartLine)
-		{
-			return 2
-		}
-	}
-	return 0
+macro isEnter(Cache) {
+  if (Cache.completebuf != nil) {
+    //msg("isEnter(Cache)")
+    CurrentCursor = Utils_getCurrentCursor()
+    if (CurrentCursor.lnFirst > Cache.rangeStartLine) {
+      return 1
+    } else if (CurrentCursor.lnFirst < Cache.rangeStartLine) {
+      return 2
+    }
+  }
+  return 0
 }
 
 macro Utils_DateTimeNow() {
@@ -125,36 +111,29 @@ macro Utils_DateTimeNow() {
   return date # " " # time
 }
 
-
-macro strstr(str1,str2)
-{
+macro strstr(str1,str2) {
     i = 0
     j = 0
     len1 = strlen(str1)
     len2 = strlen(str2)
-    if((len1 == 0) || (len2 == 0))
-    {
+    if ((len1 == 0) || (len2 == 0)) {
         return 0xffffffff
     }
-    while( i < len1)
-    {
-        if(str1[i] == str2[j])
-        {
-            while(j < len2)
-            {
-                j = j + 1
-                if(str1[i+j] != str2[j]) 
-                {
-                    break
-                }
-            }     
-            if(j == len2)
-            {
-                return i
-            }
-            j = 0
+
+    while ( i < len1) {
+      if (str1[i] == str2[j]) {
+        while (j < len2) {
+          j = j + 1
+          if (str1[i+j] != str2[j]) {
+            break
+          }
         }
-        i = i + 1      
-    }  
+        if (j == len2) {
+          return i
+        }
+        j = 0
+      }
+      i = i + 1
+    }
     return 0xffffffff
 }
