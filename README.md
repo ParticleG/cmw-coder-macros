@@ -4,27 +4,16 @@
 
 ```mermaid
 flowchart LR
-    subgraph Input Macro
-        inputMacroStart([Trigger by external Program]) --> getKey["GetKey (blocking method)"] --> saveKey[Save key data]
-        saveKey --> keyData[(KeyData)] --> inputMacroEnd([End])
-    end
+    macroStart([Trigger from \n custom msimg32.dll]) --> readKeycode{{Read keycode \n from registry}}
+    readKeycode -- Is command --> checkCommandType{{Check command type}}
+    readKeycode -- Not command --> checkCacheHit{{Check 1st layer cache hit}}
+    readKeycode -- Empty --> checkCursor{{Check cursor position}}
+    checkCommandType -- Tab --> acceptCompletion[Accept completion \n if has one]
+    checkCommandType -- Other ---> cancelCompletion[Cancel completion \n if has one] --> clearCache[Clear cache \n if has one]
+    checkCacheHit -- Hit --> updateCompletion[Update completion]
+    checkCacheHit -- Miss ---> cancelCompletion
+    checkCursor -- Changed ---> cancelCompletion
+    checkCursor -- Not changed --> insertCompletion[Insert completion \n if has one]
 
-    subgraph Process Macro
-        processMacroStart([Trigger by external Program]) --> loadKey[Load key data] --> checkKeyTime{{Check key.time}}
-        checkKeyTime -- Not equal to key . lastTime --> checkKeyType{{Check key.type}}
-        checkKeyTime -- Equal to key . lastTime --> checkCursorPosition[Check cursor position]
-        checkCursorPosition -- Same as last position --> checkCompletionFile{{Read Completion File}}
-        checkCursorPosition -- Not same as last position --> saveCursorPosition[Save cursor position] --> checkHasCompletion4{{Check has completion}} -- Has completion --> cancelCompletion[Cancel Completion]
-        checkKeyType -- Is command key --> checkKeyCode{{Check key.keycode}}
-        checkKeyType -- Is not command key --> checkHasCompletion1{{Check has completion}}
-        checkKeyCode -- Is 'Tab' --> checkHasCompletion2{{Check has completion}} -- Has completion --> acceptCompletion[Accept Completion] --> processMacroEnd([End])
-        checkKeyCode -- Is 'Esc' --> checkHasCompletion3{{Check has completion}} -- No completion --> cancelCompletion --> processMacroEnd
-        checkKeyCode -- Other command --> forwardCommand[Forward Command] --> processMacroEnd
-        checkHasCompletion1 -- Has completion --> cancelCompletion
-        checkHasCompletion1 -- No completion --> writeEditorInfo[Write editor info] --> processMacroEnd
-        checkCompletionFile -- Is same to last time --> processMacroEnd
-        checkCompletionFile -- Not same to time --> saveCompletionTime[Save completion time] --> insertCompletion[Insert Completion] --> processMacroEnd
-    end
-
-    keyData -.-> loadKey
+    clearCache -- Normal key \n or 'Enter' --> writeInfo[Write editor info \n to file]
 ```
