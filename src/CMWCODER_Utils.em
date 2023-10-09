@@ -91,25 +91,80 @@ macro Utils_getCurrentLine() {
   }
 }
 
-macro isEnter(Cache) {
-  if (Cache.completebuf != nil) {
-    //msg("isEnter(Cache)")
-    CurrentCursor = Utils_getCurrentCursor()
-    if (CurrentCursor.lnFirst > Cache.rangeStartLine) {
-      return 1
-    } else if (CurrentCursor.lnFirst < Cache.rangeStartLine) {
-      return 2
-    }
+macro Utils_getPrefix() {
+  hwnd = GetCurrentWnd()
+  if (!hwnd) {
+    return nil
   }
-  return 0
+  sel = GetWndSel(hwnd)
+  hbuf = GetWndBuf(hwnd)
+  maxLines = GetBufLineCount(hbuf)
+  lineNo = sel.lnFirst
+  charNo = sel.ichFirst
+  spaceLine = 0
+  var prefix
+  while (lineNo >= 0 && (sel.lnFirst - lineNo - spaceLine) < 10) {
+    bufline = GetBufLine(hbuf, lineNo)
+
+    if (prefix == "\\r\\n") {
+      tmpbuf = cat(bufline, "")
+      spaceLine = spaceLine + 1
+    } else if (lineNo == sel.lnFirst && charNo > 0 && charNo <= strlen(bufline)) {
+      //bufline = TrimString(bufline)
+      tmpbuf = strmid(bufline, 0, charNo)
+    } else {
+      bufline = TrimString(bufline)
+      tmpbuf = cat(bufline, "\\r\\n")
+    }
+
+    prefix = cat(tmpbuf, prefix)
+    lineNo = lineNo - 1
+  }
+  return prefix
 }
 
-macro Utils_DateTimeNow() {
-  timeInfo = GetSysTime(false)
-  date = timeInfo.Year # "/" # timeInfo.Month # "/" # timeInfo.Day
-  time = (timeInfo.Hour + 8) # ":" # timeInfo.Minute # ":" # timeInfo.Second # "." # timeInfo.Milliseconds
-  return date # " " # time
+macro Utils_getSuffix() {
+  hwnd = GetCurrentWnd()
+  if (!hwnd) {
+    return nil
+  }
+  sel = GetWndSel(hwnd)
+  hbuf = GetWndBuf(hwnd)
+  maxLines = GetBufLineCount(hbuf)
+  var suffix
+  var tmpbuf
+  charNo = sel.ichFirst
+  suffixLine = 0
+  while(suffixLine < 10 && (sel.lnFirst + suffixLine) < maxLines) {
+    bufline = GetBufLine(hbuf, sel.lnFirst + suffixLine)
+    if (bufline == nil && strlen(suffix) > 0) {
+      if (CompareLast(suffix, "\\r\\n") == 1) {
+        suffixLine = suffixLine + 1
+        continue
+      }
+    }
+
+    if (suffix == "\\r\\n") {
+      tmpbuf = bufline
+    } else {
+      if (suffixLine == 0 && charNo > 0 && charNo < strlen(bufline)) {
+        //bufline = TrimString(bufline)
+        tmpbuf = strmid(bufline, charNo, strlen(bufline))
+      } else if (suffixLine == 0 && charNo == strlen(bufline)) {
+        tmpbuf = nil
+      } else {
+        //bufline = TrimString(bufline)
+        tmpbuf = cat("\\r\\n", bufline)
+      }
+    }
+
+    suffix = cat(suffix, tmpbuf)
+    suffixLine = suffixLine + 1
+  }
+  return suffix
 }
+
+
 
 macro strstr(str1,str2) {
     i = 0
@@ -124,7 +179,7 @@ macro strstr(str1,str2) {
       if (str1[i] == str2[j]) {
         while (j < len2) {
           j = j + 1
-          if (str1[i+j] != str2[j]) {
+          if (str1[i + j] != str2[j]) {
             break
           }
         }
@@ -137,3 +192,49 @@ macro strstr(str1,str2) {
     }
     return 0xffffffff
 }
+
+macro CompareLast(str, substr) {
+  sublen = strlen(substr)
+  strlen = strlen(str)
+  if (strlen < sublen) {
+    return 0
+  }
+  return strmid(str, strlen - sublen, strlen) == substr
+}
+
+macro TrimString(szLine) {
+  szLine = TrimLeft(szLine)
+  szLIne = TrimRight(szLine)
+  return szLine
+}
+
+macro TrimLeft(szLine) {
+  nLen = strlen(szLine)
+  if (nLen == 0) {
+    return szLine
+  }
+  nIdx = 0
+  while (nIdx < nLen) {
+    if ((szLine[nIdx] != " ") && (szLine[nIdx] != "\t")) {
+      break
+    }
+    nIdx = nIdx + 1
+  }
+  return strmid(szLine, nIdx, nLen)
+}
+
+macro TrimRight(szLine) {
+    nLen = strlen(szLine)
+    if (nLen == 0) {
+      return szLine
+    }
+    nIdx = nLen
+    while (nIdx > 0) {
+      nIdx = nIdx - 1
+      if ((szLine[nIdx] != " ") && (szLine[nIdx] != "\t")) {
+        break
+      }
+    }
+    return strmid(szLine, 0, nIdx+1)
+}
+

@@ -9,12 +9,14 @@ macro Cache_init() {
   Cache.isEntry = 0
   Cache.maxLine = 0
   Cache.maxChar = 0
+  Cache.file = nil
 }
 
 macro Cache_clearString() {
   global Cache
 
   Cache.completebuf = nil
+  Cache.completesuf = nil
   Cache.pre = nil
   Cache.suf = nil
   Cache.curbuf = nil
@@ -25,12 +27,16 @@ macro Cache_isHit() {
   // msg("Cache_isHit")
   currentCursor = Utils_getCurrentCursor()
   currentLine = Utils_getCurrentLine()
-
+  hCurrentBuf = GetCurrentBuf()
   if (currentCursor == nil || currentLine == nil) {
     return false
   }
   // msg("currentCursor.ichLim: " # currentCursor.ichLim # " Cache.maxChar: " # Cache.maxChar )
-  if (Cache.completebuf == nil || currentCursor.lnFirst != Cache.rangeStartLine) {
+  if (
+    Cache.completebuf == nil ||
+    currentCursor.lnFirst != Cache.rangeStartLine ||
+    Cache.file != GetBufName(hCurrentBuf) //strlen(currentLine) == Cache.maxChar
+  ) {
     return false
   }
   note_index = strstr(currentLine, "/*")
@@ -43,9 +49,9 @@ macro Cache_isHit() {
   if (currentCursor.ichFirst > Cache.rangeStartChar) {
     curbuf = strmid(currentLine, Cache.rangeStartChar, currentCursor.ichFirst)
   } else if (currentCursor.ichFirst < Cache.rangeStartChar) {
-    // if (Cache.pre != nil) {
-    //   Cache.pre = strmid(Cache.pre, 0, currentCursor.ichFirst)
-    // }
+    if (Cache.pre != nil) {
+      Cache.pre = strmid(Cache.pre, 0, currentCursor.ichFirst)
+    }
     return false
   }
   //  msg(curbuf)
@@ -69,10 +75,11 @@ macro Cache_isHit() {
   } else {
     return false
   }
-  hCurrentBuf = GetCurrentBuf()
-  // msg(currentCursor.lnFirst # "    " # curlinebuf)
+
+  //msg(currentCursor.lnFirst # "    " # curlinebuf)
+  hCurrentWnd= GetCurrentWnd()
   PutBufLine(hCurrentBuf, currentCursor.lnFirst, tempbuf)
-  SetWndSel(hCurrentBuf, currentCursor)
+  SetWndSel(hCurrentWnd, currentCursor)
   return true
 }
 
@@ -83,16 +90,4 @@ macro Cache_setRange(startline, startchar, endline, endchar) {
   Cache.rangeStartChar = startchar
   Cache.rangeEndLine = endline
   Cache.rangeEndChar = endchar
-}
-
-macro Cache_isSameCursor() {
-  global Cache
-
-  cursor = Utils_getCurrentCursor()
-  if (cursor != nil) {
-    return (
-      Cache.rangeStartLine == cursor.lnFirst &&
-      Cache.rangeStartChar == cursor.ichFirst
-    )
-  }
 }

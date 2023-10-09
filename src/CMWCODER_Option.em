@@ -6,9 +6,9 @@ macro Config_SnippetMode() {
   hbuf = GetWndBuf(hwnd)
   sFile = GetBufName(hbuf)
   sel = GetWndSel(hwnd)
-  Completion_cancel()
+  Completion_cancel_normal()
   Cache_clearString()
-  Completion_writeInfo(sFile, hwnd, hbuf, sel)
+  Completion_writeInfo(sFile)
 }
 
 macro Config_LineMode() {
@@ -19,7 +19,11 @@ macro Config_LineMode() {
   hbuf = GetWndBuf(hwnd)
   sFile = GetBufName(hbuf)
   sel = GetWndSel(hwnd)
-  Completion_cancel()
-  Cache_clearString()
-  Completion_writeInfo(sFile, hwnd, hbuf, sel)
+  if (Cache_isHit() == true) {
+
+  } else {
+    Completion_cancel_normal()
+    Cache_clearString()
+    Completion_writeInfo(sFile)
+  }
 }
