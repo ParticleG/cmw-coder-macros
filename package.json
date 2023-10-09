@@ -1,0 +1,13 @@
+{
+  "name": "cmw-coder-macros",
+  "version": "1.0.0",
+  "description": "",
+  "main": "build.js",
+  "scripts": {
+    "build": "node build.js"
+  },
+  "type": "module",
+  "keywords": [],
+  "author": "ParticleG<particle_g@outlook.com>",
+  "license": "ISC"
+}
