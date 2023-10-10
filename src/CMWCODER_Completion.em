@@ -1,6 +1,3 @@
-
-
-
 macro constructIns(currentLine, insertion, index) {
   currentLineLength = strlen(currentLine)
   if (index < currentLineLength) {
