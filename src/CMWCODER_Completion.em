@@ -79,6 +79,13 @@ macro Completion_insertLine(inputContent) {
 }
 
 macro Completion_insert() {
+  cursor = Utils_getCurrentCursor()
+  index = strstr(Utils_getCurrentLine(), "/*")
+  if (index != 0xffffffff) {
+    if (index + 1 < cursor.ichFirst) {
+      return nil
+    }
+  }
   completion = REG_CompletionGenerated()
   // msg("completion:'@completion@'")
   if (completion!= nil) {

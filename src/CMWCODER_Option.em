@@ -2,28 +2,32 @@ macro Config_SnippetMode() {
   global Type
 
   Type = 1
-  hwnd = GetCurrentWnd()
-  hbuf = GetWndBuf(hwnd)
-  sFile = GetBufName(hbuf)
-  sel = GetWndSel(hwnd)
+
+  hCurrentBuf = GetCurrentBuf()
+  if (hCurrentBuf == hNil) {
+    return nil
+  }
+
   Completion_cancel_normal()
   Cache_clearString()
-  Completion_writeInfo(sFile)
+  Completion_writeInfo(GetBufName(hCurrentBuf))
 }
 
 macro Config_LineMode() {
   global Type
 
   Type = 0
-  hwnd = GetCurrentWnd()
-  hbuf = GetWndBuf(hwnd)
-  sFile = GetBufName(hbuf)
-  sel = GetWndSel(hwnd)
-  if (Cache_isHit() == true) {
 
+  hCurrentBuf = GetCurrentBuf()
+  if (hCurrentBuf == hNil) {
+    return nil
+  }
+
+  if (Cache_isHit() == true) {
+    // TODO: Implement 1st cache layer
   } else {
     Completion_cancel_normal()
     Cache_clearString()
-    Completion_writeInfo(sFile)
+    Completion_writeInfo(GetBufName(hCurrentBuf))
   }
 }
