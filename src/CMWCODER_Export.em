@@ -1,7 +1,7 @@
 // Ctrl + Alt + Shift + F9
 macro Export_CancelCompletion() {
-  global Cache
-  if (Cache == nil) {
+  global isInit
+  if (isInit == nil) {
     Event_init()
   }
   Completion_Cancel();
@@ -14,8 +14,8 @@ macro Export_AcceptCompletion() {
 
 // Ctrl + Alt + Shift + F11
 macro Export_AutoCompletion() {
-  global Cache
-  if (Cache == nil) {
+  global isInit
+  if (isInit == nil) {
     Event_init()
   }
   if (Config_GetAutoCompletion()) {
@@ -29,8 +29,8 @@ macro Export_InsertCompletion() {
 }
 
 macro Export_ManualCompletion() {
-  global Cache
-  if (Cache == nil) {
+  global isInit
+  if (isInit == nil) {
     Event_init()
   }
   Completion_Trigger()
