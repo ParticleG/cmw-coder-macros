@@ -20,15 +20,12 @@ event AppStart() {
   ShellExecute("open", scriptPath, nil, nil, 2)
 }
 
-event AppShutdown() {
-  // SetReg("needClose", 1)
-}
+event AppShutdown() {}
 
 macro Event_init() {
   global isInit
 
   position_init()
-  type_init()
 
   Config_init()
   Cache_init()
@@ -41,10 +38,4 @@ macro position_init() {
 
   position.line = 0
   position.column = 0
-}
-
-macro type_init() {
-  global Type
-
-  Type = 0
 }

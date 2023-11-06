@@ -164,8 +164,6 @@ macro Utils_getSuffix() {
   return suffix
 }
 
-
-
 macro strstr(str1,str2) {
     i = 0
     j = 0
@@ -237,4 +235,3 @@ macro TrimRight(szLine) {
     }
     return strmid(szLine, 0, nIdx+1)
 }
-

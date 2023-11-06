@@ -1,5 +1,6 @@
 macro Symbol_get() {
   var symbol
+  var paramet_symbol
   cursor = Utils_getCurrentCursor()
   hbuf = GetCurrentBuf()
   curSymbolLocation = GetSymbolLocationFromLn(hbuf, cursor.lnFirst)
@@ -9,14 +10,21 @@ macro Symbol_get() {
   hsyml = SymbolChildren(curSymbolLocation)
   cchild = SymlistCount(hsyml)
   ichild = 0
-
+  
   while(ichild < cchild) {
     childsym = SymListItem(hsyml,  ichild)
-    if (childsym.Type != "Type Reference") {
+    if (childsym.Type == "Parameter"){
       DeclaredSymbol = SymbolDeclaredType(childsym)
       if (DeclaredSymbol != nil) {
         if (DeclaredSymbol.Type == "Structure" || DeclaredSymbol.Type == "Type Definition") {
-          //msg(DeclaredSymbol)
+          name = procSymbolName(DeclaredSymbol.Symbol)
+          paramet_symbol = paramet_symbol # "|" # name # "|" # DeclaredSymbol.File # "|" # DeclaredSymbol.lnFirst # "|" # DeclaredSymbol.lnLim # "|"
+        }
+      }
+    } else if (childsym.Type != "Type Reference") {
+      DeclaredSymbol = SymbolDeclaredType(childsym)
+      if (DeclaredSymbol != nil) {
+        if (DeclaredSymbol.Type == "Structure" || DeclaredSymbol.Type == "Type Definition") {
           name = procSymbolName(DeclaredSymbol.Symbol)
           symbol = symbol # "|" # name # "|" # DeclaredSymbol.File # "|" # DeclaredSymbol.lnFirst # "|" # DeclaredSymbol.lnLim # "|"
         }
@@ -24,7 +32,7 @@ macro Symbol_get() {
     }
     ichild = ichild + 1
   }
-  return symbol
+  return symbol # paramet_symbol
 }
 
 macro procSymbolName(symbol_name) {
