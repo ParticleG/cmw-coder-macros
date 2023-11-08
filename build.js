@@ -1,4 +1,4 @@
-import { mkdir, readFile, readdir, writeFile } from "fs/promises";
+import { copyFile, mkdir, readFile, readdir, writeFile } from "fs/promises";
 import { join } from "path";
 
 import packageJson from "./package.json" assert {type: "json"};
@@ -17,3 +17,5 @@ await writeFile(
     ).map((file) => readFile(join("src", file), { flag: "r" }))
   )).join("\n").replace(/%PLUGIN_VERSION%/g, packageJson.version)
 );
+
+await copyFile("editorInfo.vbs", join(outDir, "editorInfo.vbs"));
