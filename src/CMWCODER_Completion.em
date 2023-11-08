@@ -149,10 +149,13 @@ macro _Completion_CancelNoWrap() {
 
   // msg("escap")
   hCurrentBuf = GetBufHandle(Cache.file)
+  if (hCurrentBuf == nil){
+    return nil
+  }
   cursor = Utils_getCurrentCursor()
   lineCount = GetBufLineCount(hCurrentBuf)
   if (Cache.rangeStartLine > lineCount){
-    renturn nil
+    return nil
   }
   completionLine = GetBufLine(hCurrentBuf, Cache.rangeStartLine)
   completebuf = "/*" # Cache.firstline

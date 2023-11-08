@@ -15,6 +15,11 @@ macro REG_GetCompletionGenerated() {
 }
 
 macro REG_SetEditorInfo(editorInfo) {
-  SetReg("editorInfo", editorInfo)
+  if (Config_isNew()) {
+    path = "\"" # GetEnv("APPDATA") # "\\Source Insight\\editorInfo.vbs\""
+    ShellExecute("open", path, editorInfo, nil, 2)
+  } else {
+    SetReg("editorInfo", editorInfo)
+  }
 }
 
