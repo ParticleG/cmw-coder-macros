@@ -12,6 +12,10 @@ macro Symbol_get() {
   ichild = 0
   
   while(ichild < cchild) {
+    // 最大值在60-65之间，为保险使用55
+    if (ichild > 55){
+      return symbol # paramet_symbol
+    }
     childsym = SymListItem(hsyml,  ichild)
     if (childsym.Type == "Parameter"){
       DeclaredSymbol = SymbolDeclaredType(childsym)
