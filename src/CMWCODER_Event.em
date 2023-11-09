@@ -1,5 +1,5 @@
 event DocumentOpen(sFile) {
-  if (!Tabs_exist(sFile) && Utils_isCLangFile(sFile)) {
+  if (!Tabs_exist(sFile) && Utils_IsCLangFile(sFile)) {
     Tabs_add(sFile)
   }
 }

@@ -34,9 +34,3 @@ macro Config_ChangeAutoCompletion() {
   Config.autoCompletion = !Config.autoCompletion
   REG_SetAutoCompletion(Config.autoCompletion)
 }
-
-macro Config_GetAutoCompletion() {
-  global Config
-
-  return Config.autoCompletion
-}

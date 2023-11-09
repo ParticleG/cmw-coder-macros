@@ -9,14 +9,14 @@ macro Tabs_init() {
 macro Tabs_exist(sFile) {
   global Tabs
 
-  return Utils_findFirst(Tabs.paths, sFile) != invalid
+  return Utils_FindFirst(Tabs.paths, sFile) != invalid
 }
 
 macro Tabs_add(sFile) {
   global Tabs
 
   Tabs.count = Tabs.count + 1
-  Tabs.sizes = cat(Tabs.sizes, calcuSizes(sFile))
+  Tabs.sizes = cat(Tabs.sizes, Utils_CalcSizes(sFile))
   Tabs.paths = cat(Tabs.paths, sFile)
   //msg("Tabs_add: " # sFile)
 }

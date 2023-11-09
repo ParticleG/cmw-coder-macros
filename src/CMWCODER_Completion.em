@@ -19,7 +19,7 @@ macro Completion_Accept() {
       tmpbuf = Cache.pre # Cache.firstline
       PutBufLine(hbuf, Cache.rangeStartLine, tmpbuf)
       tmpbuf = GetBufLine(hbuf, Cache.rangeEndLine)
-      tmpbuf = cutstr(tmpbuf, "*/")
+      tmpbuf = Utils_Strcut(tmpbuf, "*/")
       PutBufLine(hbuf, Cache.rangeEndLine, tmpbuf)
     }
   } else {
@@ -51,7 +51,7 @@ macro Completion_Cancel() {
 
 macro Completion_Insert() {
   global Cache
-  cursor = Utils_getCurrentCursor()
+  cursor = Utils_GetCurrentCursor()
   if (Cache.rangeStartLine != cursor.lnFirst && Cache.rangeStartChar != cursor.ichFirst) {
     return nil
   }
@@ -74,11 +74,11 @@ macro Completion_Trigger() {
   if (hCurrentBuf == hNil) {
     return nil
   }
-  currentCursor = Utils_getCurrentCursor()
-  currentLine = Utils_getCurrentLine()
+  currentCursor = Utils_GetCurrentCursor()
+  currentLine = Utils_GetCurrentLine()
   if (currentCursor.ichFirst < strlen(currentLine)){
     suf = strmid(currentLine, currentCursor.ichFirst, strlen(currentLine))
-    suf = TrimRight(suf)
+    suf = Utils_RTrim(suf)
     if(suf != " "){
       return nil
     }
@@ -94,14 +94,14 @@ macro _Completion_CancelNoWrap() {
   if (hCurrentBuf == nil){
     return nil
   }
-  cursor = Utils_getCurrentCursor()
+  cursor = Utils_GetCurrentCursor()
   lineCount = GetBufLineCount(hCurrentBuf)
   if (Cache.rangeEndLine > lineCount){
     return nil
   }
   completionLine = GetBufLine(hCurrentBuf, Cache.rangeStartLine)
   completebuf = "/*" # Cache.firstline
-  index = strstr(completionLine, completebuf)
+  index = Utils_FindSubstring(completionLine, completebuf)
   if (index == 0xffffffff){
     return nil
   }
@@ -136,7 +136,7 @@ macro _Completion_CancelWrap() {
   global Cache
 
   hCurrentBuf = GetCurrentBuf()
-  cursor = Utils_getCurrentCursor()
+  cursor = Utils_GetCurrentCursor()
   lineCount = GetBufLineCount(hCurrentBuf)
   if (Cache.rangeEndLine > lineCount) {
     return nil
@@ -173,8 +173,8 @@ macro _Completion_CancelWrap() {
 macro _Completion_InsertLine(inputContent) {
   global Cache
 
-  curLineBuf = Utils_getCurrentLine()
-  currentCursor = Utils_getCurrentCursor()
+  curLineBuf = Utils_GetCurrentLine()
+  currentCursor = Utils_GetCurrentCursor()
   if (currentCursor == nil) {
     return false
   }
@@ -201,9 +201,9 @@ macro _Completion_InsertLine(inputContent) {
 
 macro _Completion_InsertSnippet(completionGenerated) {
   global Cache
-  curLineBuf = Utils_getCurrentLine()
-  currentCursor = Utils_getCurrentCursor()
-  Cursor = Utils_getCurrentCursor()
+  curLineBuf = Utils_GetCurrentLine()
+  currentCursor = Utils_GetCurrentCursor()
+  Cursor = Utils_GetCurrentCursor()
   hCurrentWnd = GetCurrentWnd()
   hCurrentBuf = GetCurrentBuf()
   if (currentCursor == nil) {
@@ -216,7 +216,7 @@ macro _Completion_InsertSnippet(completionGenerated) {
   Cache.pre = curLineBuf
   Cache.suf = nil
 
-  index = strstr(completionGenerated, "\\r\\n")
+  index = Utils_FindSubstring(completionGenerated, "\\r\\n")
   pre_index = 0
   index_count = strlen(completionGenerated)
   // 首行去重 -- 未完成
@@ -236,7 +236,7 @@ macro _Completion_InsertSnippet(completionGenerated) {
     Cache.maxChar = strlen(curLineBuf) + strlen(completionGenerated)
   }
   while (index != 0xffffffff ) {
-    index = strstr(strmid(completionGenerated, pre_index, index_count), "\\r\\n")
+    index = Utils_FindSubstring(strmid(completionGenerated, pre_index, index_count), "\\r\\n")
     if (index != 0xffffffff) {
       index = index + pre_index
       completion = strmid(completionGenerated, pre_index, index)
@@ -273,7 +273,7 @@ macro _Completion_writeInfo(sFile) {
   var editorInfo
 
   // Get cursor info
-  currentCursor = Utils_getCurrentCursor()
+  currentCursor = Utils_GetCurrentCursor()
   editorInfo.cursor = currentCursor
   Cache.rangeStartLine = currentCursor.lnFirst
   Cache.rangeStartChar = currentCursor.ichFirst
@@ -288,8 +288,8 @@ macro _Completion_writeInfo(sFile) {
   editorInfo.type = 0
   editorInfo.version = Config_version()
   editorInfo.symbols = Symbol_get()
-  editorInfo.prefix = Utils_getPrefix()
-  editorInfo.suffix = Utils_getSuffix()
+  editorInfo.prefix = Utils_GetPrefix()
+  editorInfo.suffix = Utils_GetSuffix()
 
   REG_SetEditorInfo(editorInfo)
 }

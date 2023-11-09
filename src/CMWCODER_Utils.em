@@ -1,4 +1,4 @@
-macro Utils_findFirst(left, right) {
+macro Utils_FindFirst(left, right) {
   leftIndex = 0
   while (leftIndex < strlen(left) - strlen(right) + 1) {
     rightIndex = 0
@@ -16,7 +16,7 @@ macro Utils_findFirst(left, right) {
   return invalid
 }
 
-macro strcmp(left, right) {
+macro Utils_Strcmp(left, right) {
   index = 0
   while (left[index]) {
     if (left[index] != right[index]) {
@@ -26,7 +26,7 @@ macro strcmp(left, right) {
   return 0
 }
 
-macro sleep(int) {
+macro Utils_Sleep(int) {
   int= int * 250
   cout = 0
   while (cout < int) {
@@ -34,7 +34,7 @@ macro sleep(int) {
   }
 }
 
-macro ComparePre(str, substr) {
+macro Utils_StrcmpPre(str, substr) {
   sublen = strlen(substr)
   strlen = strlen(str)
 
@@ -42,7 +42,7 @@ macro ComparePre(str, substr) {
     return 0
   }
   tmpbuf = strmid(str, 0, sublen)
-  //msg("ComparePre  tmpbuf: " # tmpbuf # " substr: " # substr)
+  //msg("Utils_StrcmpPre  tmpbuf: " # tmpbuf # " substr: " # substr)
   if (tmpbuf == substr) {
     return 1
   } else {
@@ -50,7 +50,7 @@ macro ComparePre(str, substr) {
   }
 }
 
-macro calcuSizes(sFile) {
+macro Utils_CalcSizes(sFile) {
   lenth = strlen(sFile)
   sizes = "000" + lenth
   if (strlen(sizes) < 3) {
@@ -59,15 +59,15 @@ macro calcuSizes(sFile) {
   return sizes
 }
 
-macro Utils_isCLangFile(sFile) {
+macro Utils_IsCLangFile(sFile) {
   return (
-    Utils_findFirst(sFile, ".c") != invalid ||
-    Utils_findFirst(sFile, ".h") != invalid
+    Utils_FindFirst(sFile, ".c") != invalid ||
+    Utils_FindFirst(sFile, ".h") != invalid
   )
 }
 
-macro cutstr(source, cutter) {
-  cutIndex = Utils_findFirst(source, cutter);
+macro Utils_Strcut(source, cutter) {
+  cutIndex = Utils_FindFirst(source, cutter);
   if (cutIndex == invalid) {
     return source
   }
@@ -77,21 +77,21 @@ macro cutstr(source, cutter) {
   )
 }
 
-macro Utils_getCurrentCursor() {
+macro Utils_GetCurrentCursor() {
   hCurrentWnd = GetCurrentWnd()
   if (hCurrentWnd) {
     return GetWndSel(hCurrentWnd)
   }
 }
 
-macro Utils_getCurrentLine() {
+macro Utils_GetCurrentLine() {
   hCurrentBuf = GetCurrentBuf()
   if (hCurrentBuf) {
     return GetBufLine(hCurrentBuf, GetBufLnCur(hCurrentBuf))
   }
 }
 
-macro Utils_getPrefix() {
+macro Utils_GetPrefix() {
   hwnd = GetCurrentWnd()
   if (!hwnd) {
     return nil
@@ -110,10 +110,10 @@ macro Utils_getPrefix() {
       tmpbuf = cat(bufline, "")
       spaceLine = spaceLine + 1
     } else if (lineNo == sel.lnFirst && charNo > 0 && charNo <= strlen(bufline)) {
-      //bufline = TrimString(bufline)
+      //bufline = Utils_Trim(bufline)
       tmpbuf = strmid(bufline, 0, charNo)
     } else {
-      bufline = TrimString(bufline)
+      bufline = Utils_Trim(bufline)
       tmpbuf = cat(bufline, "\\r\\n")
     }
 
@@ -123,7 +123,7 @@ macro Utils_getPrefix() {
   return prefix
 }
 
-macro Utils_getSuffix() {
+macro Utils_GetSuffix() {
   hwnd = GetCurrentWnd()
   if (!hwnd) {
     return nil
@@ -138,7 +138,7 @@ macro Utils_getSuffix() {
   while(suffixLine < 10 && (sel.lnFirst + suffixLine) < maxLines) {
     bufline = GetBufLine(hbuf, sel.lnFirst + suffixLine)
     if (bufline == nil && strlen(suffix) > 0) {
-      if (CompareLast(suffix, "\\r\\n") == 1) {
+      if (_Utils_CompareLast(suffix, "\\r\\n") == 1) {
         suffixLine = suffixLine + 1
         continue
       }
@@ -148,12 +148,12 @@ macro Utils_getSuffix() {
       tmpbuf = bufline
     } else {
       if (suffixLine == 0 && charNo > 0 && charNo < strlen(bufline)) {
-        //bufline = TrimString(bufline)
+        //bufline = Utils_Trim(bufline)
         tmpbuf = strmid(bufline, charNo, strlen(bufline))
       } else if (suffixLine == 0 && charNo == strlen(bufline)) {
         tmpbuf = nil
       } else {
-        //bufline = TrimString(bufline)
+        //bufline = Utils_Trim(bufline)
         tmpbuf = cat("\\r\\n", bufline)
       }
     }
@@ -164,7 +164,7 @@ macro Utils_getSuffix() {
   return suffix
 }
 
-macro strstr(str1,str2) {
+macro Utils_FindSubstring(str1, str2) {
     i = 0
     j = 0
     len1 = strlen(str1)
@@ -191,22 +191,13 @@ macro strstr(str1,str2) {
     return 0xffffffff
 }
 
-macro CompareLast(str, substr) {
-  sublen = strlen(substr)
-  strlen = strlen(str)
-  if (strlen < sublen) {
-    return 0
-  }
-  return strmid(str, strlen - sublen, strlen) == substr
-}
-
-macro TrimString(szLine) {
-  szLine = TrimLeft(szLine)
-  szLIne = TrimRight(szLine)
+macro Utils_Trim(szLine) {
+  szLine = Utils_LTrim(szLine)
+  szLIne = Utils_RTrim(szLine)
   return szLine
 }
 
-macro TrimLeft(szLine) {
+macro Utils_LTrim(szLine) {
   nLen = strlen(szLine)
   if (nLen == 0) {
     return szLine
@@ -221,7 +212,7 @@ macro TrimLeft(szLine) {
   return strmid(szLine, nIdx, nLen)
 }
 
-macro TrimRight(szLine) {
+macro Utils_RTrim(szLine) {
     nLen = strlen(szLine)
     if (nLen == 0) {
       return szLine
@@ -234,4 +225,13 @@ macro TrimRight(szLine) {
       }
     }
     return strmid(szLine, 0, nIdx+1)
+}
+
+macro _Utils_CompareLast(str, substr) {
+  sublen = strlen(substr)
+  strlen = strlen(str)
+  if (strlen < sublen) {
+    return 0
+  }
+  return strmid(str, strlen - sublen, strlen) == substr
 }

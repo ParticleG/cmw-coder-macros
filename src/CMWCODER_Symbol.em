@@ -1,7 +1,7 @@
 macro Symbol_get() {
   var symbol
   var paramet_symbol
-  cursor = Utils_getCurrentCursor()
+  cursor = Utils_GetCurrentCursor()
   hbuf = GetCurrentBuf()
   curSymbolLocation = GetSymbolLocationFromLn(hbuf, cursor.lnFirst)
   if (curSymbolLocation == nil) {
@@ -36,7 +36,7 @@ macro Symbol_get() {
 }
 
 macro procSymbolName(symbol_name) {
-  index = strstr(symbol_name, ".") 
+  index = Utils_FindSubstring(symbol_name, ".") 
   if (index != 0xffffffff) {
     return strmid(symbol_name, index, strlen(symbol_name))
   } else {
