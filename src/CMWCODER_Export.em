@@ -18,9 +18,7 @@ macro Export_AutoCompletion() {
   if (isInit == nil) {
     Event_init()
   }
-  if (Config_GetAutoCompletion()) {
-    Completion_Trigger()
-  }
+  Completion_Trigger()
 }
 
 // Ctrl + Alt + Shift + F12
