@@ -24,18 +24,11 @@ event AppShutdown() {}
 
 macro Event_init() {
   global isInit
-
-  position_init()
-
+  
   Config_init()
   Cache_init()
   Tabs_init()
   isInit = true
 }
 
-macro position_init() {
-  global position
 
-  position.line = 0
-  position.column = 0
-}
