@@ -52,7 +52,7 @@ macro Completion_Cancel() {
 macro Completion_Insert() {
   global Cache
   cursor = Utils_getCurrentCursor()
-  if (Cache.rangeStartLine != cursor.lnFirst) {
+  if (Cache.rangeStartLine != cursor.lnFirst && Cache.rangeStartChar != cursor.ichFirst) {
     return nil
   }
   completion = REG_GetCompletionGenerated()
