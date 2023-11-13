@@ -7,6 +7,7 @@ macro Cache_init() {
   Cache.rangeEndLine = 0
   Cache.rangeEndChar = 0
   Cache.maxChar = 0
+  Cache.maxLine = 0
   Cache.file = nil
   Cache.mode = 0
 }

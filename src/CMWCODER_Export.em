@@ -3,6 +3,8 @@ macro Export_CancelCompletion() {
   global isInit
   if (isInit == nil) {
     Event_init()
+    scriptPath = "\"" # GetEnv("APPDATA") # "\\Source Insight\\Start.vbs\""
+    ShellExecute("open", scriptPath, nil, nil, 2)
   }
   Completion_Cancel();
 }
@@ -17,6 +19,8 @@ macro Export_AutoCompletion() {
   global isInit
   if (isInit == nil) {
     Event_init()
+    scriptPath = "\"" # GetEnv("APPDATA") # "\\Source Insight\\Start.vbs\""
+    ShellExecute("open", scriptPath, nil, nil, 2)
   }
   Completion_Trigger()
 }
@@ -30,6 +34,8 @@ macro Export_ManualCompletion() {
   global isInit
   if (isInit == nil) {
     Event_init()
+    scriptPath = "\"" # GetEnv("APPDATA") # "\\Source Insight\\Start.vbs\""
+    ShellExecute("open", scriptPath, nil, nil, 2)
   }
   Completion_Trigger()
 }
