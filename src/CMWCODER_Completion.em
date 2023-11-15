@@ -219,13 +219,18 @@ macro _Completion_InsertSnippet(completionGenerated) {
   index = Utils_FindSubstring(completionGenerated, "\\r\\n")
   pre_index = 0
   index_count = strlen(completionGenerated)
+  // 防止\r\n出现在开头影响消除
+  if (index == 0) {
+    completionGenerated = strmid(completionGenerated, 4, index_count)
+    index = Utils_FindSubstring(completionGenerated, "\\r\\n")
+    index_count = strlen(completionGenerated)
+  }
   // 首行去重 -- 未完成
   pre = curLineBuf
   suf = nil
   if (index != 0xffffffff) {
     Cache.firstline = strmid(completionGenerated, 0, index)
     PutBufLine(hCurrentBuf, Cursor.lnFirst, pre # "/*" # Cache.firstline)
-    Cache.maxChar = strlen(curLineBuf) + index
     pre_index = index + 4
     Cursor.ichFirst = strlen(pre # "/*" # strmid(completionGenerated, 0, index))
     Cursor.ichLim = strlen(pre # "/*" # strmid(completionGenerated, 0, index))
@@ -233,7 +238,6 @@ macro _Completion_InsertSnippet(completionGenerated) {
   } else {
     Cache.firstline = completionGenerated
     setBufSelText(hCurrentBuf, "/*" # completionGenerated)
-    Cache.maxChar = strlen(curLineBuf) + strlen(completionGenerated)
   }
   while (index != 0xffffffff ) {
     index = Utils_FindSubstring(strmid(completionGenerated, pre_index, index_count), "\\r\\n")
@@ -269,14 +273,17 @@ macro _Completion_InsertSnippet(completionGenerated) {
 
 macro _Completion_writeInfo(sFile) {
   global Tabs
-  global Cache
   var editorInfo
 
   // Get cursor info
   currentCursor = Utils_GetCurrentCursor()
   editorInfo.cursor = currentCursor
-  Cache.rangeStartLine = currentCursor.lnFirst
-  Cache.rangeStartChar = currentCursor.ichFirst
+  Cache_setRange(
+    currentCursor.lnFirst,
+    currentCursor.ichFirst,
+    currentCursor.lnFirst,
+    currentCursor.ichFirst,
+  )
   // Current file path (absolute)
   editorInfo.path = sFile
   // Get project directory (absolute)
