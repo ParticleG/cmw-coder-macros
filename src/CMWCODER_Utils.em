@@ -103,7 +103,7 @@ macro Utils_GetPrefix() {
   charNo = sel.ichFirst
   spaceLine = 0
   var prefix
-  while (lineNo >= 0 && (sel.lnFirst - lineNo - spaceLine) < 10) {
+  while (lineNo >= 0 && (sel.lnFirst - lineNo - spaceLine) < 15) {
     bufline = GetBufLine(hbuf, lineNo)
 
     if (prefix == "\\r\\n") {
@@ -135,7 +135,7 @@ macro Utils_GetSuffix() {
   var tmpbuf
   charNo = sel.ichFirst
   suffixLine = 0
-  while(suffixLine < 10 && (sel.lnFirst + suffixLine) < maxLines) {
+  while(suffixLine < 5 && (sel.lnFirst + suffixLine) < maxLines) {
     bufline = GetBufLine(hbuf, sel.lnFirst + suffixLine)
     if (bufline == nil && strlen(suffix) > 0) {
       if (_Utils_CompareLast(suffix, "\\r\\n") == 1) {
