@@ -103,7 +103,7 @@ macro Utils_GetPrefix() {
   charNo = sel.ichFirst
   spaceLine = 0
   var prefix
-  while (lineNo >= 0 && (sel.lnFirst - lineNo - spaceLine) < 15) {
+  while (lineNo >= 0 && (sel.lnFirst - lineNo - spaceLine) < 30) {
     bufline = GetBufLine(hbuf, lineNo)
 
     if (prefix == "\\r\\n") {
