@@ -14,12 +14,13 @@ macro REG_GetCompletionGenerated() {
   return GetReg("completionGenerated")
 }
 
-macro REG_SetEditorInfo(editorInfo) {
+macro REG_SetContext() {
   if (Config_isNew()) {
     path = "\"" # GetEnv("APPDATA") # "\\Source Insight\\editorInfo.vbs\""
-    ShellExecute("open", path, editorInfo, nil, 2)
+    ShellExecute("open", path, "COMCODER_perfix " # Utils_GetPrefix() # " COMCODER_suffix " # Utils_GetSuffix(), nil, 2)
   } else {
-    SetReg("editorInfo", editorInfo)
+    SetReg("COMCODER_perfix", Utils_GetPrefix())
+    SetReg("COMCODER_suffix", Utils_GetSuffix())
   }
 }
 
