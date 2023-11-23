@@ -273,30 +273,25 @@ macro _Completion_InsertSnippet(completionGenerated) {
 
 macro _Completion_writeInfo(sFile) {
   global Tabs
-  var editorInfo
-
-  // Get cursor info
+  global Cache
+  
   currentCursor = Utils_GetCurrentCursor()
-  editorInfo.cursor = currentCursor
+  if (Cache.rangeStartLine != currentCursor.lnFirst){
+    SetReg("CMWCODER_cursor", currentCursor)
+    SetReg("CMWCODER_path", sFile)
+    SetReg("CMWCODER_project", GetProjDir(GetCurrentProj()))
+    SetReg("CMWCODER_version", Config_version())
+    SetReg("CMWCODER_tabs", Tabs.paths)
+    SetReg("CMWCODER_symbols", Symbol_get())
+    REG_SetContext()
+  } else {
+    SetReg("CMWCODER_curfix", Utils_GetCurrentLine()
+  }
+  
   Cache_setRange(
     currentCursor.lnFirst,
     currentCursor.ichFirst,
     currentCursor.lnFirst,
     currentCursor.ichFirst,
   )
-  // Current file path (absolute)
-  editorInfo.path = sFile
-  // Get project directory (absolute)
-  editorInfo.project = GetProjDir(GetCurrentProj())
-  // Get opened tabs' paths (absolute path)
-  editorInfo.tabs = Tabs.paths
-  // Completion type (0: Line, 1: Snippet)
-  // TODO: Remove this later
-  editorInfo.type = 0
-  editorInfo.version = Config_version()
-  editorInfo.symbols = Symbol_get()
-  editorInfo.prefix = Utils_GetPrefix()
-  editorInfo.suffix = Utils_GetSuffix()
-
-  REG_SetEditorInfo(editorInfo)
 }
