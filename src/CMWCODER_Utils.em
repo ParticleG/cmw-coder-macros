@@ -77,20 +77,6 @@ macro Utils_Strcut(source, cutter) {
   )
 }
 
-macro Utils_GetCurrentCursor() {
-  hCurrentWnd = GetCurrentWnd()
-  if (hCurrentWnd) {
-    return GetWndSel(hCurrentWnd)
-  }
-}
-
-macro Utils_GetCurrentLine() {
-  hCurrentBuf = GetCurrentBuf()
-  if (hCurrentBuf) {
-    return GetBufLine(hCurrentBuf, GetBufLnCur(hCurrentBuf))
-  }
-}
-
 macro Utils_GetPrefix() {
   hwnd = GetCurrentWnd()
   if (!hwnd) {
@@ -98,7 +84,6 @@ macro Utils_GetPrefix() {
   }
   sel = GetWndSel(hwnd)
   hbuf = GetWndBuf(hwnd)
-  maxLines = GetBufLineCount(hbuf)
   lineNo = sel.lnFirst
   charNo = sel.ichFirst
   spaceLine = 0

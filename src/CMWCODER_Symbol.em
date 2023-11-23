@@ -1,8 +1,12 @@
 macro Symbol_get() {
   var symbol
   var paramet_symbol
-  cursor = Utils_GetCurrentCursor()
+  hCurrentWnd = GetCurrentWnd()
   hbuf = GetCurrentBuf()
+  if (hCurrentWnd == nil || hbuf == nil) {
+    return nil
+  }
+  cursor = GetWndSel(hCurrentWnd)
   curSymbolLocation = GetSymbolLocationFromLn(hbuf, cursor.lnFirst)
   if (curSymbolLocation == nil) {
     return symbol
