@@ -35,7 +35,7 @@ macro Completion_Accept() {
 }
 
 macro Completion_Cancel() {
-  canceltype = REG_GetCancelType()
+  canceltype = Env_GetCancelType()
 
   if (Cache.completebuf == nil) {
     return nil
@@ -52,14 +52,14 @@ macro Completion_Cancel() {
 macro Completion_Insert() {
   global Cache
   hCurrentWnd = GetCurrentWnd()
-  curcor = GetWndSel(hCurrentWnd)
-  if (curcor.lnFirst == 0 && curcor.ichFirst == 0) {
+  cursor = GetWndSel(hCurrentWnd)
+  if (cursor.lnFirst == 0 && cursor.ichFirst == 0) {
     return nil
   }
   if (Cache.rangeStartLine != cursor.lnFirst && Cache.rangeStartChar != cursor.ichFirst) {
     return nil
   }
-  completion = REG_GetCompletionGenerated()
+  completion = Env_GetCompletionGenerated()
 
   if (completion!= nil) {
     // Determine mode based on content
@@ -100,7 +100,7 @@ macro _Completion_CancelNoWrap() {
     return nil
   }
   cursor = GetWndSel(hCurrentWnd)
-  if (curcor.lnFirst == 0 && curcor.ichFirst == 0) {
+  if (cursor.lnFirst == 0 && cursor.ichFirst == 0) {
     return nil
   }
   lineCount = GetBufLineCount(hCurrentBuf)
@@ -145,7 +145,7 @@ macro _Completion_CancelWrap() {
     return nil
   }
   cursor = GetWndSel(hCurrentWnd)
-  if (curcor.lnFirst == 0 && curcor.ichFirst == 0) {
+  if (cursor.lnFirst == 0 && cursor.ichFirst == 0) {
     return nil
   }
   lineCount = GetBufLineCount(hCurrentBuf)
@@ -289,7 +289,6 @@ macro _Completion_InsertSnippet(completionGenerated) {
 }
 
 macro _Completion_writeInfo(sFile) {
-  global Tabs
   global Cache
   hCurrentWnd = GetCurrentWnd()
   hCurrentBuf = GetCurrentBuf()
@@ -299,15 +298,14 @@ macro _Completion_writeInfo(sFile) {
   curLineBuf = GetBufLine(hCurrentBuf, GetBufLnCur(hCurrentBuf))
   currentCursor = GetWndSel(hCurrentWnd)
   if (Cache.rangeStartLine != currentCursor.lnFirst){
-    SetReg("CMWCODER_cursor", currentCursor)
-    SetReg("CMWCODER_path", sFile)
-    SetReg("CMWCODER_project", GetProjDir(GetCurrentProj()))
-    SetReg("CMWCODER_version", Config_version())
-    SetReg("CMWCODER_tabs", Tabs.paths)
-    SetReg("CMWCODER_symbols", Symbol_get())
-    REG_SetContext()
+    PutEnv("CMWCODER_cursor", currentCursor)
+    PutEnv("CMWCODER_path", sFile)
+    PutEnv("CMWCODER_project", GetProjDir(GetCurrentProj()))
+    PutEnv("CMWCODER_version", Config_version())
+    PutEnv("CMWCODER_symbols", Symbol_get())
+    Env_SetContext()
   } else {
-    SetReg("CMWCODER_curfix", curLineBuf)
+    PutEnv("CMWCODER_curfix", curLineBuf)
   }
   
   Cache_setRange(

@@ -7,10 +7,10 @@ macro Config_init() {
   info = GetProgramInfo()
   Config.programMajorVersion = info.versionMajor
 
-  autoCompletion = REG_GetAutoCompletion()
+  autoCompletion = Env_GetAutoCompletion()
   if (autoCompletion == nil) {
     Config.autoCompletion = true
-    REG_SetAutoCompletion(Config.autoCompletion)
+    Env_SetAutoCompletion(Config.autoCompletion)
   } else {
     Config.autoCompletion = autoCompletion
   }
@@ -32,5 +32,5 @@ macro Config_ChangeAutoCompletion() {
   global Config
 
   Config.autoCompletion = !Config.autoCompletion
-  REG_SetAutoCompletion(Config.autoCompletion)
+  Env_SetAutoCompletion(Config.autoCompletion)
 }

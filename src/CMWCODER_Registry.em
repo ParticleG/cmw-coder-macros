@@ -1,26 +1,26 @@
-macro REG_GetAutoCompletion() {
-  return GetReg("autoCompletion")
+macro Env_GetAutoCompletion() {
+  return GetEnv("autoCompletion")
 }
 
-macro REG_SetAutoCompletion(value) {
-  SetReg("autoCompletion", value)
+macro Env_SetAutoCompletion(value) {
+  PutEnv("autoCompletion", value)
 }
 
-macro REG_GetCancelType() {
-  return GetReg("cancelType")
+macro Env_GetCancelType() {
+  return GetEnv("cancelType")
 }
 
-macro REG_GetCompletionGenerated() {
-  return GetReg("completionGenerated")
+macro Env_GetCompletionGenerated() {
+  return GetEnv("completionGenerated")
 }
 
-macro REG_SetContext() {
+macro Env_SetContext() {
   if (Config_isNew()) {
     path = "\"" # GetEnv("APPDATA") # "\\Source Insight\\editorInfo.vbs\""
-    ShellExecute("open", path, "CMWCODER_perfix " # Utils_GetPrefix() # " CMWCODER_suffix " # Utils_GetSuffix(), nil, 2)
+    ShellExecute("open", path, "CMWCODER_prefix " # Utils_GetPrefix() # " CMWCODER_suffix " # Utils_GetSuffix(), nil, 2)
   } else {
-    SetReg("CMWCODER_perfix", Utils_GetPrefix())
-    SetReg("CMWCODER_suffix", Utils_GetSuffix())
+    PutEnv("CMWCODER_prefix", Utils_GetPrefix())
+    PutEnv("CMWCODER_suffix", Utils_GetSuffix())
   }
 }
 

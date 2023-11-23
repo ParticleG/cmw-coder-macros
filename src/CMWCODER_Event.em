@@ -1,13 +1,9 @@
 event DocumentOpen(sFile) {
-  if (!Tabs_exist(sFile) && Utils_IsCLangFile(sFile)) {
-    Tabs_add(sFile)
-  }
+  PutEnv("CMWCODER_tab", "o" # sFile)
 }
 
 event DocumentClose(sFile) {
-  if (Tabs_exist(sFile)) {
-    Tabs_remove(sFile)
-  }
+  PutEnv("CMWCODER_tab", "c" # sFile)
 }
 
 event ProjectOpen(sProject) {
@@ -27,7 +23,6 @@ macro Event_init() {
   
   Config_init()
   Cache_init()
-  Tabs_init()
   isInit = true
 }
 
