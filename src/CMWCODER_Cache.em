@@ -30,3 +30,13 @@ macro Cache_setRange(startline, startchar, endline, endchar) {
   Cache.rangeEndLine = endline
   Cache.rangeEndChar = endchar
 }
+
+macro Cache_isNewLine() {
+  global Cache
+  hCurrentWnd = GetCurrentWnd()
+  if (hCurrentWnd == nil) {
+    return false
+  }
+  currentCursor = GetWndSel(hCurrentWnd)
+  return Cache.rangeStartLine != currentCursor.lnFirst
+}
