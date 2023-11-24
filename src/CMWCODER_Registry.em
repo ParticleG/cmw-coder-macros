@@ -1,9 +1,9 @@
-macro Env_GetAutoCompletion() {
-  return GetEnv("autoCompletion")
+macro REG_GetAutoCompletion() {
+  return GetReg("autoCompletion")
 }
 
-macro Env_SetAutoCompletion(value) {
-  PutEnv("autoCompletion", value)
+macro REG_SetAutoCompletion(value) {
+  SetReg("autoCompletion", value)
 }
 
 macro Env_GetCancelType() {
