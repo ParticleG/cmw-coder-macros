@@ -1,17 +1,17 @@
 macro REG_GetAutoCompletion() {
-  return GetReg("autoCompletion")
+  return GetReg("CMWCODER_autoCompletion")
 }
 
 macro REG_SetAutoCompletion(value) {
-  SetReg("autoCompletion", value)
+  SetReg("CMWCODER_autoCompletion", value)
 }
 
 macro Env_GetCancelType() {
-  return GetEnv("cancelType")
+  return GetEnv("CMWCODER_cancelType")
 }
 
 macro Env_GetCompletionGenerated() {
-  return GetEnv("completionGenerated")
+  return GetEnv("CMWCODER_completionGenerated")
 }
 
 macro Env_SetContext() {
