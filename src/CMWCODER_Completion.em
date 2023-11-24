@@ -304,7 +304,7 @@ macro _Completion_writeInfo(sFile) {
     PutEnv("CMWCODER_symbols", Symbol_get())
     Env_SetContext()
   } else {
-    PutEnv("CMWCODER_curfix", curLineBuf)
+    PutEnv("CMWCODER_currentPrefix", curLineBuf)
   }
   
   Cache_setRange(
