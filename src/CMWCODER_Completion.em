@@ -110,7 +110,7 @@ macro _Completion_CancelNoWrap() {
   completionLine = GetBufLine(hCurrentBuf, Cache.rangeStartLine)
   completebuf = "/*" # Cache.firstline
   index = Utils_FindSubstring(completionLine, completebuf)
-  if (index == 0xffffffff){
+  if (index == -1){
     return nil
   }
   pre = strmid(completionLine, 0, index)
@@ -245,7 +245,7 @@ macro _Completion_InsertSnippet(completionGenerated) {
   // 首行去重 -- 未完成
   pre = curLineBuf
   suf = nil
-  if (index != 0xffffffff) {
+  if (index != -1) {
     Cache.firstline = strmid(completionGenerated, 0, index)
     PutBufLine(hCurrentBuf, Cursor.lnFirst, pre # "/*" # Cache.firstline)
     pre_index = index + 4
@@ -256,9 +256,9 @@ macro _Completion_InsertSnippet(completionGenerated) {
     Cache.firstline = completionGenerated
     setBufSelText(hCurrentBuf, "/*" # completionGenerated)
   }
-  while (index != 0xffffffff ) {
+  while (index != -1 ) {
     index = Utils_FindSubstring(strmid(completionGenerated, pre_index, index_count), "\\r\\n")
-    if (index != 0xffffffff) {
+    if (index != -1) {
       index = index + pre_index
       completion = strmid(completionGenerated, pre_index, index)
       pre_index = index + 4

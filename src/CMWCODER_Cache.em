@@ -2,10 +2,10 @@ macro Cache_init() {
   global Cache
 
   Cache_clearString()
-  Cache.rangeStartLine = 0
-  Cache.rangeStartChar = 0
-  Cache.rangeEndLine = 0
-  Cache.rangeEndChar = 0
+  Cache.rangeStartLine = -1
+  Cache.rangeStartChar = -1
+  Cache.rangeEndLine = -1
+  Cache.rangeEndChar = -1
   Cache.maxLine = 0
   Cache.file = nil
   Cache.mode = 0

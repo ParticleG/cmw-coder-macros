@@ -155,7 +155,7 @@ macro Utils_FindSubstring(str1, str2) {
     len1 = strlen(str1)
     len2 = strlen(str2)
     if ((len1 == 0) || (len2 == 0)) {
-      return 0xffffffff
+      return -1
     }
 
     while ( i < len1) {
@@ -173,7 +173,7 @@ macro Utils_FindSubstring(str1, str2) {
       }
       i = i + 1
     }
-    return 0xffffffff
+    return -1
 }
 
 macro Utils_Trim(szLine) {

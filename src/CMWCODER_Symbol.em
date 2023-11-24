@@ -45,7 +45,7 @@ macro Symbol_get() {
 
 macro procSymbolName(symbol_name) {
   index = Utils_FindSubstring(symbol_name, ".") 
-  if (index != 0xffffffff) {
+  if (index != -1) {
     return strmid(symbol_name, index, strlen(symbol_name))
   } else {
     return symbol_name
