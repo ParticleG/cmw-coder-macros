@@ -15,7 +15,7 @@ await writeFile(
     (
       await readdir("src")
     ).map((file) => readFile(join("src", file), { flag: "r" }))
-  )).join("\n").replace(/%PLUGIN_VERSION%/g, packageJson.version)
+  )).join("\r\n").replace(/%PLUGIN_VERSION%/g, packageJson.version)
 );
 
 await copyFile("editorInfo.vbs", join(outDir, "editorInfo.vbs"));
