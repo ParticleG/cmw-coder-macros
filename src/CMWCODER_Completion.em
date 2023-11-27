@@ -40,12 +40,10 @@ macro Completion_Cancel() {
   if (Cache.completebuf == nil) {
     return nil
   }
-  if (canceltype == "1") { // move curosor
-    _Completion_CancelNoWrap()
-  } else if (canceltype == "2") { // backspace character
-    _Completion_CancelNoWrap()
-  } else if (canceltype == "3") { // backspace line
+  if (canceltype == "1") {
     _Completion_CancelWrap()
+  } else {
+    _Completion_CancelNoWrap()
   }
 }
 
