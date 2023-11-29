@@ -14,6 +14,10 @@ macro Env_GetCompletionGenerated() {
   return GetEnv("CMWCODER_completionGenerated")
 }
 
+macro Env_SetDebugLog(value) {
+  SetReg("CMWCODER_debugLog", value)
+}
+
 macro Env_SetContext() {
   if (Config_isNew()) {
     path = "\"" # GetEnv("APPDATA") # "\\Source Insight\\editorInfo.vbs\""
