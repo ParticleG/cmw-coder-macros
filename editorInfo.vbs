@@ -1,6 +1,6 @@
 Option Explicit
-Const registryPrefixPath = "HKEY_CURRENT_USER\Software\COWCODER\CMWCODER_prefix"
-Const registrySuffixPath = "HKEY_CURRENT_USER\Software\COWCODER\CMWCODER_suffix"
+Const registryPrefixPath = "HKEY_CURRENT_USER\Software\Source Dynamics\Source Insight\4.0\CMWCODER_prefix"
+Const registrySuffixPath = "HKEY_CURRENT_USER\Software\Source Dynamics\Source Insight\4.0\CMWCODER_suffix"
 Const prefixName = "CMWCODER_prefix"
 Const suffxiName = "CMWCODER_suffix"
 
@@ -8,7 +8,7 @@ Dim strParameter, prefixInfo, suffixInfo
 
 strParameter = GetParameter()
 if InStr(strParameter, prefixName) <> 0 Then
-  prefixInfo = Mid(strParameter, InStr(strParameter, prefixName) + Len(prefixName) + 1,  InStr(strParameter, suffxiName) - InStr(strParameter, prefixName) - 1)
+  prefixInfo = Mid(strParameter, InStr(strParameter, prefixName) + Len(prefixName) + 1,  InStr(strParameter, suffxiName) - InStr(strParameter, prefixName) - Len(prefixName) - 1)
   
   call WScript.CreateObject("WScript.Shell").RegWrite(registryPrefixPath, Trim(prefixInfo))
 End if
@@ -16,6 +16,7 @@ if InStr(strParameter, suffxiName) <> 0 Then
   suffixInfo = Mid(strParameter, InStr(strParameter, suffxiName) + Len(suffxiName) + 1)
   call WScript.CreateObject("WScript.Shell").RegWrite(registrySuffixPath, Trim(suffixInfo))
 End if
+
 
 Function GetParameter()
   Dim processList, process

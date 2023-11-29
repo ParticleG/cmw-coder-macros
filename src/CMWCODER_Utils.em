@@ -98,7 +98,7 @@ macro Utils_GetPrefix() {
       //bufline = Utils_Trim(bufline)
       tmpbuf = strmid(bufline, 0, charNo)
     } else {
-      bufline = Utils_Trim(bufline)
+      bufline = Utils_RTrim(bufline)
       tmpbuf = cat(bufline, "\\r\\n")
     }
 
