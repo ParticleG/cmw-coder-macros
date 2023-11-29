@@ -172,7 +172,6 @@ macro _Completion_CancelWrap() {
         }
       }
       PutBufLine(hCurrentBuf, cursor.lnFirst, pre)
-      hCurrentWnd = GetCurrentWnd()
       SetWndSel(hCurrentWnd, cursor)
     } else {
       return false
