@@ -11,16 +11,19 @@ macro Completion_Accept() {
     if (Cache.mode == 0)
     {
       tmpbuf = Cache.pre # Cache.completebuf # Cache.completesuf
-      PutBufLine(hbuf, Cache.rangeStartLine, tmpbuf)
+      DelBufLine(hbuf, Cache.rangeStartLine)
+      InsBufLine(hbuf, Cache.rangeStartLine, tmpbuf)
       sel.ichFirst = strlen(Cache.pre # Cache.completebuf)
       sel.ichLim = strlen(Cache.pre # Cache.completebuf)
       SetWndSel(hwnd, sel)
     } else {
       tmpbuf = Cache.pre # Cache.firstline
-      PutBufLine(hbuf, Cache.rangeStartLine, tmpbuf)
+      DelBufLine(hbuf, Cache.rangeStartLine)
+      InsBufLine(hbuf, Cache.rangeStartLine, tmpbuf)
       tmpbuf = GetBufLine(hbuf, Cache.rangeEndLine)
       tmpbuf = Utils_Strcut(tmpbuf, "*/")
-      PutBufLine(hbuf, Cache.rangeEndLine, tmpbuf)
+      DelBufLine(hbuf, Cache.rangeEndLine)
+      InsBufLine(hbuf, Cache.rangeEndLine, tmpbuf)
     }
   } else {
     return false
