@@ -1,10 +1,12 @@
 Option Explicit
 Const registryPrefixPath = "HKEY_CURRENT_USER\Software\Source Dynamics\Source Insight\4.0\CMWCODER_prefix"
 Const registrySuffixPath = "HKEY_CURRENT_USER\Software\Source Dynamics\Source Insight\4.0\CMWCODER_suffix"
+Const registryVerifyPath = "HKEY_CURRENT_USER\Software\Source Dynamics\Source Insight\4.0\CMWCODER_verifyContent"
 Const prefixName = "CMWCODER_prefix"
 Const suffxiName = "CMWCODER_suffix"
+Const verifyName = "CMWCODER_verifyContent"
 
-Dim strParameter, prefixInfo, suffixInfo
+Dim strParameter, prefixInfo, suffixInfo, verifyContent
 
 strParameter = GetParameter()
 if InStr(strParameter, prefixName) <> 0 Then
@@ -15,6 +17,11 @@ End if
 if InStr(strParameter, suffxiName) <> 0 Then
   suffixInfo = Mid(strParameter, InStr(strParameter, suffxiName) + Len(suffxiName) + 1)
   call WScript.CreateObject("WScript.Shell").RegWrite(registrySuffixPath, Trim(suffixInfo))
+End if
+
+if InStr(strParameter,verifyName) <> 0 Then
+  verifyContent = Mid(strParameter, InStr(strParameter, verifyName) + Len(verifyName) + 1)
+  call WScript.CreateObject("WScript.Shell").RegWrite(registryVerifyPath, verifyContent)
 End if
 
 

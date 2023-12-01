@@ -44,3 +44,19 @@ macro Export_ChangeCompletionMode() {
   Config_ChangeAutoCompletion()
   Beep()
 }
+
+macro Export_VerifyScope() {
+  hcurrentBuf = GetCurrentBuf()
+  if (hcurrentBuf == hnil) {
+    return nil
+  }
+  scope = Env_GetVerificationScope()
+  lineCount = scope.startLine
+  content = ""
+  while (lineCount < scope.endLine) {
+    currentLineBuf = GetBufLine(hcurrentBuf, lineCount)
+    content = content # "\\r\\n" # currentLineBuf
+    lineCount = lineCount + 1 
+  }
+  Env_SetVerifyContent(content)
+}

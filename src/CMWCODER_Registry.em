@@ -28,3 +28,22 @@ macro Env_SetContext() {
   }
 }
 
+macro Env_SetSelection(cursor){
+  PutEnv("CMWCODER_selection", cursor)
+}
+
+macro Env_GetVerificationScope(){
+  var scope
+  scope.startLine = GetEnv("CMWCODER_verifyStartLine")
+  scope.endLine = GetEnv("CMWCODER_verifyEndLine")
+  return scope
+}
+
+macro Env_SetVerifyContent(content) {
+  if (Config_isNew()) {
+    path = "\"" # GetEnv("APPDATA") # "\\Source Insight\\editorInfo.vbs\""
+    ShellExecute("open", path, "CMWCODER_verifyContent " # content, nil, 2)
+  } else {
+    PutEnv("CMWCODER_verifyContent", content)
+  }
+}

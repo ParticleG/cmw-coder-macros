@@ -26,4 +26,13 @@ macro Event_init() {
   isInit = true
 }
 
+event DocumentSelectionChanged(sFile) {
+  hcurrentWnd = GetCurrentWnd()
+  if (hcurrentWnd != hnil) {
+    cursor = GetWndSel(hcurrentWnd)
+    if (cursor.lnFirst != cursor.lnLast || cursor.ichFirst != cursor.ichLim) {
+      Env_SetSelection(cursor)
+    }
+  }
+}
 
