@@ -53,7 +53,12 @@ macro Export_VerifyScope() {
   maxLineCount = GetBufLineCount(hcurrentBuf)
   scope = Env_GetVerificationScope()
   lineCount = scope.startLine
+  if (scope.startLine > maxLineCount) {
+    Env_SetActualScope(0, 0)
+    return nil
+  }
   content = ""
+
   endLine = scope.endLine
   if (scope.endLine > maxLineCount) {
     endLine = maxLineCount
@@ -65,4 +70,5 @@ macro Export_VerifyScope() {
     lineCount = lineCount + 1 
   }
   Env_SetVerifyContent(content)
+  Env_SetActualScope(scope.startLine, endLine)
 }

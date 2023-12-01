@@ -47,3 +47,8 @@ macro Env_SetVerifyContent(content) {
     PutEnv("CMWCODER_verifyContent", content)
   }
 }
+
+macro Env_SetActualScope(startLine, endLine){
+  PutEnv("CMWCODER_actualStartLine", startLine)
+  PutEnv("CMWCODER_actualEndLine", endLine)
+}
