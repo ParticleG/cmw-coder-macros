@@ -50,10 +50,16 @@ macro Export_VerifyScope() {
   if (hcurrentBuf == hnil) {
     return nil
   }
+  maxLineCount = GetBufLineCount(hcurrentBuf)
   scope = Env_GetVerificationScope()
   lineCount = scope.startLine
   content = ""
-  while (lineCount < scope.endLine) {
+  endLine = scope.endLine
+  if (scope.endLine > maxLineCount) {
+    endLine = maxLineCount
+  }
+  
+  while (lineCount < endLine) {
     currentLineBuf = GetBufLine(hcurrentBuf, lineCount)
     content = content # "\\r\\n" # currentLineBuf
     lineCount = lineCount + 1 
