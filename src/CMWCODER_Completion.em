@@ -289,6 +289,7 @@ macro _Completion_InsertSnippet(completionGenerated) {
 }
 
 macro _Completion_writeInfo(sFile) {
+  global Cache
   hCurrentWnd = GetCurrentWnd()
   hCurrentBuf = GetCurrentBuf()
   if (hCurrentBuf == nil || hCurrentWnd == nil) {
@@ -296,7 +297,7 @@ macro _Completion_writeInfo(sFile) {
   }
   curLineBuf = GetBufLine(hCurrentBuf, GetBufLnCur(hCurrentBuf))
   currentCursor = GetWndSel(hCurrentWnd)
-  if (Cache_isNewLine()){
+  if (Cache.rangeStartLine != currentCursor.lnFirst){
     PutEnv("CMWCODER_cursor", currentCursor)
     PutEnv("CMWCODER_path", sFile)
     PutEnv("CMWCODER_project", GetProjDir(GetCurrentProj()))
