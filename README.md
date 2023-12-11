@@ -4,16 +4,19 @@
 
 ```mermaid
 flowchart LR
-    macroStart([Trigger from \n custom msimg32.dll]) --> readKeycode{{Read keycode \n from registry}}
-    readKeycode -- Is command --> checkCommandType{{Check command type}}
-    readKeycode -- Not command --> checkCacheHit{{Check 1st layer cache hit}}
-    readKeycode -- Empty --> checkCursor{{Check cursor position}}
-    checkCommandType -- Tab --> acceptCompletion[Accept completion \n if has one]
-    checkCommandType -- Other ---> cancelCompletion[Cancel completion \n if has one] --> clearCache[Clear cache \n if has one]
-    checkCacheHit -- Hit --> updateCompletion[Update completion]
-    checkCacheHit -- Miss ---> cancelCompletion
-    checkCursor -- Changed ---> cancelCompletion
-    checkCursor -- Not changed --> insertCompletion[Insert completion \n if has one]
-
-    clearCache -- Normal key \n or 'Enter' --> writeInfo[Write editor info \n to file]
+	subgraph Main Macros
+    	Export_AcceptCompletion([Accept Completion])
+    	Export_AutoCompletion([Auto Completion])
+    	Export_CancelCompletion([Cancel Completion])
+    	Export_InsertCompletion([Insert Completion])
+    end
+    Export_AcceptCompletion --> applyCompletion[Apply the completion displayed as comment]
+    Export_AutoCompletion --> grabContext[Get content around caret]
+    Export_AutoCompletion --> scanSymbols[Scan symbols in context]
+    Export_AutoCompletion --> iterateTabs[Iterate over tab paths]
+    grabContext --> sendToDll[Send to DLL through env variables]
+    scanSymbols --> sendToDll
+    iterateTabs --> sendToDll
+    Export_CancelCompletion --> removeCompletion[Remove the completion displayed as comment]
+    Export_InsertCompletion --> insertCompletion[Insert the completion as comment]
 ```
