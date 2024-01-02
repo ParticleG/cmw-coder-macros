@@ -220,3 +220,9 @@ macro _Utils_CompareLast(str, substr) {
   }
   return strmid(str, strlen - sublen, strlen) == substr
 }
+
+macro Utils_PathGet(){
+  hCurrentBuf = GetCurrentBuf()
+  filePath = GetBufName(hCurrentBuf)
+  PutEnv("CMWCODER_filep", filePath)
+}
