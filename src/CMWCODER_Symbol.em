@@ -25,7 +25,7 @@ macro Symbol_get() {
       DeclaredSymbol = SymbolDeclaredType(childsym)
       if (DeclaredSymbol != nil) {
         if (DeclaredSymbol.Type == "Structure" || DeclaredSymbol.Type == "Type Definition") {
-          name = procSymbolName(DeclaredSymbol.Symbol)
+          name = _Symbol_procSymbolName(DeclaredSymbol.Symbol)
           paramet_symbol = paramet_symbol # "|" # name # "|" # DeclaredSymbol.File # "|" # DeclaredSymbol.lnFirst # "|" # DeclaredSymbol.lnLim # "|"
         }
       }
@@ -33,7 +33,7 @@ macro Symbol_get() {
       DeclaredSymbol = SymbolDeclaredType(childsym)
       if (DeclaredSymbol != nil) {
         if (DeclaredSymbol.Type == "Structure" || DeclaredSymbol.Type == "Type Definition") {
-          name = procSymbolName(DeclaredSymbol.Symbol)
+          name = _Symbol_procSymbolName(DeclaredSymbol.Symbol)
           symbol = symbol # "|" # name # "|" # DeclaredSymbol.File # "|" # DeclaredSymbol.lnFirst # "|" # DeclaredSymbol.lnLim # "|"
         }
       }
@@ -43,7 +43,7 @@ macro Symbol_get() {
   return symbol # paramet_symbol
 }
 
-macro procSymbolName(symbol_name) {
+macro _Symbol_procSymbolName(symbol_name) {
   index = Utils_FindSubstring(symbol_name, ".") 
   if (index != -1) {
     return strmid(symbol_name, index, strlen(symbol_name))

@@ -1,77 +1,18 @@
 macro Completion_Accept() {
   global Cache
 
-  hwnd = GetCurrentWnd()
-  hbuf = GetWndBuf(hwnd)
-  if (hwnd == 0 || hbuf == 0) {
-    return false
-  }
-  sel = GetWndSel(hwnd)
-  if (Cache.completebuf != nil) {
-    if (Cache.mode == 0)
-    {
-      tmpbuf = Cache.pre # Cache.completebuf # Cache.completesuf
-      DelBufLine(hbuf, Cache.rangeStartLine)
-      InsBufLine(hbuf, Cache.rangeStartLine, tmpbuf)
-      sel.ichFirst = strlen(Cache.pre # Cache.completebuf)
-      sel.ichLim = strlen(Cache.pre # Cache.completebuf)
-      SetWndSel(hwnd, sel)
-    } else {
-      tmpbuf = Cache.pre # Cache.firstline
-      DelBufLine(hbuf, Cache.rangeStartLine)
-      InsBufLine(hbuf, Cache.rangeStartLine, tmpbuf)
-      tmpbuf = GetBufLine(hbuf, Cache.rangeEndLine)
-      tmpbuf = Utils_Strcut(tmpbuf, "*/")
-      DelBufLine(hbuf, Cache.rangeEndLine)
-      InsBufLine(hbuf, Cache.rangeEndLine, tmpbuf)
-    }
-  } else {
+  hCurrentBuf = GetCurrentBuf()
+  if (hCurrentBuf == nil) {
     return false
   }
 
-  Cache_clearString()
-  sel.lnFirst = Cache.rangeEndLine
-  sel.lnLast = Cache.rangeEndLine
-  sel.ichFirst = strlen(tmpbuf)
-  sel.ichLim = strlen(tmpbuf)
-  SetWndSel(hwnd, sel)
-}
-
-macro Completion_Cancel() {
-  canceltype = Env_GetCancelType()
-
-  if (Cache.completebuf == nil) {
-    return nil
-  }
-  if (canceltype == "1") {
-    _Completion_CancelWrap()
-  } else {
-    _Completion_CancelNoWrap()
-  }
-}
-
-macro Completion_Insert() {
-  global Cache
-  hCurrentWnd = GetCurrentWnd()
-  cursor = GetWndSel(hCurrentWnd)
-  if (cursor.lnFirst == 0 && cursor.ichFirst == 0) {
-    return nil
-  }
-  if (Cache.rangeStartLine != cursor.lnFirst && Cache.rangeStartChar != cursor.ichFirst) {
-    return nil
-  }
   completion = Env_GetCompletionGenerated()
-
-  if (completion!= nil) {
-    // Determine mode based on content
-    mode = strmid(completion, 0, 1)
-    completion = strmid(completion, 1, strlen(completion))
-    if (mode){
-      _Completion_InsertSnippet(completion)
-    } else {
-      _Completion_InsertLine(completion)
-    }
+  if (completion != nil) {
+    _Completion_Insert(completion)
+  } else {
+    return false
   }
+  Cache_clearString()
 }
 
 macro Completion_Trigger() {
@@ -92,147 +33,17 @@ macro Completion_Trigger() {
   _Completion_writeInfo(GetBufName(hCurrentBuf))
 }
 
-macro _Completion_CancelNoWrap() {
-  global Cache
 
-  hCurrentBuf = GetBufHandle(Cache.file)
+macro _Completion_Insert(completionGenerated) {
+  global Cache
   hCurrentWnd = GetCurrentWnd()
-  if (hCurrentBuf == nil || hCurrentWnd == nil){
-    return nil
-  }
-  cursor = GetWndSel(hCurrentWnd)
-  if (cursor.lnFirst == 0 && cursor.ichFirst == 0) {
-    return nil
-  }
-  lineCount = GetBufLineCount(hCurrentBuf)
-  if (Cache.rangeEndLine > lineCount){
-    return nil
-  }
-  completionLine = GetBufLine(hCurrentBuf, Cache.rangeStartLine)
-  completebuf = "/*" # Cache.firstline
-  index = Utils_FindSubstring(completionLine, completebuf)
-  if (index == -1){
-    return nil
-  }
-  pre = strmid(completionLine, 0, index)
-  if (Cache.completebuf != nil) {
-    if (Cache.rangeStartLine != Cache.rangeEndLine) {
-      lineNo = Cache.rangeEndLine
-      while (lineNo > Cache.rangeStartLine) {
-        DelBufLine(hCurrentBuf, lineNo)
-        lineNo = lineNo - 1
-      }
-    }
-    DelBufLine(hCurrentBuf, Cache.rangeStartLine)
-    InsBufLine(hCurrentBuf, Cache.rangeStartLine, pre)
-    hCurrentWndBuf = GetWndBuf(hCurrentWnd)
-    if (hCurrentWndBuf == hCurrentBuf)
-    {
-      if (cursor.lnFirst > Cache.rangeStartLine) {
-        cursor.lnFirst = cursor.lnFirst - Cache.rangeEndLine + Cache.rangeStartLine
-        cursor.lnLast = cursor.lnLast - Cache.rangeEndLine + Cache.rangeStartLine
-      }
-      SetWndSel(hCurrentWnd, cursor)
-    }
-  } 
-}
-
-macro _Completion_CancelWrap() {
-  global Cache
-
   hCurrentBuf = GetCurrentBuf()
-  hCurrentWnd = GetCurrentWnd()
-  if (hCurrentBuf == nil || hCurrentWnd == nil){
-    return nil
-  }
-  cursor = GetWndSel(hCurrentWnd)
-  if (cursor.lnFirst == 0 && cursor.ichFirst == 0) {
-    return nil
-  }
-  lineCount = GetBufLineCount(hCurrentBuf)
-  if (Cache.rangeEndLine > lineCount) {
-    return nil
-  }
-  pre = strmid(GetBufLine(hCurrentBuf, cursor.lnFirst), 0, cursor.ichFirst)
-  if (hCurrentBuf) {
-    if (Cache.completebuf != nil) {
-      if (Cache.rangeStartLine != Cache.rangeEndLine) {
-        lineCount = GetBufLineCount(hCurrentBuf)
-        if (lineCount < Cache.maxLine) {
-          Cache.rangeStartLine = Cache.rangeStartLine - 1
-          Cache.rangeEndLine = Cache.rangeEndLine - 1
-        } else if (lineCount > Cache.maxLine) {
-          Cache.rangeStartLine = Cache.rangeStartLine + 1
-          Cache.rangeEndLine = Cache.rangeEndLine + 1
-        }
-        lineNo = Cache.rangeEndLine
-        while (lineNo > Cache.rangeStartLine) {
-          DelBufLine(hCurrentBuf, lineNo)
-          lineNo = lineNo - 1
-        }
-      }
-      PutBufLine(hCurrentBuf, cursor.lnFirst, pre)
-      SetWndSel(hCurrentWnd, cursor)
-    } else {
-      return false
-    }
-    return true
-  }
-  return false
-}
-
-macro _Completion_InsertLine(inputContent) {
-  global Cache
-  hCurrentBuf = GetCurrentBuf()
-  hCurrentWnd = GetCurrentWnd()
-  if (hCurrentBuf == nil || hCurrentWnd == nil) {
-    return false
-  }
-  curLineBuf = GetBufLine(hCurrentBuf, GetBufLnCur(hCurrentBuf))
   currentCursor = GetWndSel(hCurrentWnd)
-  if (currentCursor == nil) {
+  if (hCurrentBuf == nil || hCurrentWnd == nil || currentCursor == nil) {
     return false
   }
-  currentCharactor = currentCursor.ichFirst
-  Cache.completebuf = inputContent
-  Cache.pre = curLineBuf
-  buf = curLineBuf # "/*" # inputContent # "*/"
 
-  Cache_setRange(
-    currentCursor.lnFirst,
-    currentCursor.ichFirst,
-    currentCursor.lnLast,
-    currentCursor.ichFirst + strlen(Cache.completebuf) + 4
-  )
-  Cache.maxLine = GetBufLineCount(hCurrentBuf)
-  Cache.file = GetBufName(hCurrentBuf)
-  Cache.mode = 0
-  Cache.firstline = Cache.completebuf
-  PutBufLine(hCurrentBuf, currentCursor.lnFirst, buf)
-  SetWndSel(hCurrentWnd, currentCursor)
-}
-
-macro _Completion_InsertSnippet(completionGenerated) {
-  global Cache
-  hCurrentWnd = GetCurrentWnd()
-  hCurrentBuf = GetCurrentBuf()
-  if (hCurrentBuf == nil || hCurrentWnd == nil) {
-    return false
-  }
-  curLineBuf = GetBufLine(hCurrentBuf, GetBufLnCur(hCurrentBuf))
-  currentCursor = GetWndSel(hCurrentWnd)
   Cursor = currentCursor
-
-  if (currentCursor == nil) {
-    return false
-  }
-  currentCharactor = currentCursor.ichFirst
-  Cache.completebuf = completionGenerated
-  Cache.rangeStartLine = currentCursor.lnFirst
-  Cache.rangeStartChar = currentCursor.ichFirst
-  Cache.pre = curLineBuf
-  Cache.suf = nil
-
   index = Utils_FindSubstring(completionGenerated, "\\r\\n")
   pre_index = 0
   index_count = strlen(completionGenerated)
@@ -242,27 +53,29 @@ macro _Completion_InsertSnippet(completionGenerated) {
     index = Utils_FindSubstring(completionGenerated, "\\r\\n")
     index_count = strlen(completionGenerated)
   }
-  // 首行去重 -- 未完成
-  pre = curLineBuf
-  suf = nil
+  // 添加第一行和单行补全
   if (index != -1) {
     Cache.firstline = strmid(completionGenerated, 0, index)
-    PutBufLine(hCurrentBuf, Cursor.lnFirst, pre # "/*" # Cache.firstline)
+    PutBufLine(hCurrentBuf, Cursor.lnFirst, Cache.firstline)
     pre_index = index + 4
-    Cursor.ichFirst = strlen(pre # "/*" # strmid(completionGenerated, 0, index))
-    Cursor.ichLim = strlen(pre # "/*" # strmid(completionGenerated, 0, index))
+    Cursor.ichFirst = strlen(strmid(completionGenerated, 0, index))
+    Cursor.ichLim = strlen(strmid(completionGenerated, 0, index))
     SetWndSel(hCurrentWnd, Cursor)
   } else {
     Cache.firstline = completionGenerated
-    setBufSelText(hCurrentBuf, "/*" # completionGenerated)
+    PutBufLine(hCurrentBuf, Cursor.lnFirst, Cache.firstline)
+    Cursor.ichFirst = strlen(Cache.firstline)
+    Cursor.ichLim = strlen(Cache.firstline)
+    SetWndSel(hCurrentWnd, Cursor)
   }
+  // 添加多行补全
   while (index != -1 ) {
     index = Utils_FindSubstring(strmid(completionGenerated, pre_index, index_count), "\\r\\n")
     if (index != -1) {
       index = index + pre_index
       completion = strmid(completionGenerated, pre_index, index)
-      pre_index = index + 4
       Cursor.lnFirst = Cursor.lnFirst + 1
+      pre_index = index + 4
       Cursor.lnLast = Cursor.lnLast + 1
       Cursor.ichFirst = strlen(completion)
       Cursor.ichLim = strlen(completion)
@@ -279,13 +92,6 @@ macro _Completion_InsertSnippet(completionGenerated) {
     InsBufLine(hCurrentBuf, Cursor.lnFirst, completion)
     SetWndSel(hCurrentWnd, Cursor)
   }
-  // PutBufLine(hCurrentBuf, Cursor.lnFirst, "*/"  )
-  SetBufSelText(hCurrentBuf, "*/" # suf)
-  Cache.rangeEndLine = Cursor.lnFirst
-  Cache.file = GetBufName(hCurrentBuf)
-  Cache.mode = 1
-  Cache.maxLine = GetBufLineCount(hCurrentBuf)
-  SetWndSel(hCurrentWnd, currentCursor)
 }
 
 macro _Completion_writeInfo(sFile) {

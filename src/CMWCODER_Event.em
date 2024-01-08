@@ -12,8 +12,6 @@ event ProjectOpen(sProject) {
 
 event AppStart() {
   Event_init()
-  scriptPath = "\"" # GetEnv("APPDATA") # "\\Source Insight\\Start.vbs\""
-  ShellExecute("open", scriptPath, nil, nil, 2)
 }
 
 event AppShutdown() {}
@@ -35,4 +33,3 @@ event DocumentSelectionChanged(sFile) {
     }
   }
 }
-
