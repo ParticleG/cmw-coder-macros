@@ -12,7 +12,6 @@ macro Completion_Accept() {
   } else {
     return false
   }
-  Cache_clearString()
 }
 
 macro Completion_Trigger() {
@@ -113,11 +112,4 @@ macro _Completion_writeInfo(sFile) {
   } else {
     PutEnv("CMWCODER_currentPrefix", curLineBuf)
   }
-  
-  Cache_setRange(
-    currentCursor.lnFirst,
-    currentCursor.ichFirst,
-    currentCursor.lnFirst,
-    currentCursor.ichFirst,
-  )
 }

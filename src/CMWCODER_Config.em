@@ -17,7 +17,7 @@ macro Config_init() {
 }
 
 macro Config_isNew() {
-  global Config
+  global Config 
 
   return Config.programMajorVersion == "4"
 }

@@ -20,7 +20,6 @@ macro Event_init() {
   global isInit
   
   Config_init()
-  Cache_init()
   isInit = true
 }
 
