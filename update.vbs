@@ -113,6 +113,10 @@ Function CopyFileToPath(fileName, srcPath, destPath)
     End If
 End Function
 
+Function IsNullOrEmpty(stringValue)
+  IsNullOrEmpty = (Len("" & stringValue) = 0)
+End Function
+
 Function RegistryRead(registryPath)
   on error resume next
   RegistryRead = WScript.CreateObject("WScript.Shell").RegRead(registryPath)
