@@ -3,6 +3,7 @@ Const pluginPath = "C:\Windows\Temp\ComwareCoder\"
 Const pluginPathPre = "C:\Windows\Temp\SourceInsight"
 Const downloadPath = "\\h3cbjnt23-fs\软件平台3\V7DEV\Comware Leopard 工具\SI插件\"
 Const downloadBaseFile = "Comware Coder Setup 1.0.0.exe"
+Const downloadMacroFile = "CMWCODER.em"
 
 Dim nodeJsPath
 nodeJsPath = WScript.CreateObject("WScript.Shell").ExpandEnvironmentStrings("%APPDATA%") & "\Source Insight"
@@ -38,6 +39,7 @@ Function runCheck()
 End Function
 
 Function folderProc()
+    on error resume next
     Dim fs
     Set fs = WScript.CreateObject("Scripting.FileSystemObject")
     RemoveFolder(nodeJsPath)
@@ -65,6 +67,7 @@ End Function
 
 Function downloadFiles()
     Call getFileByHttp(url, pluginPath, downloadBaseFile)
+    Call getFileByHttp(url, pluginPath, downloadMacroFile)
 End Function
 
 Function getFileByHttp(url, desPath, fileName)
@@ -91,6 +94,7 @@ End Function
 
 Function CopyFilesToPath()
     Call CopyFileToPath(downloadBaseFile, downloadPath, pluginPath)
+    Call CopyFileToPath(downloadMacroFile, downloadPath, pluginPath)
 End Function
 
 Function CopyFileToPath(fileName, srcPath, destPath)
