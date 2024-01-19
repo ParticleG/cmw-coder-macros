@@ -2,7 +2,7 @@ Const url = "http://rdee.h3c.com/h3c-ai-assistant/plugin/sourceinsight/"
 Const pluginPath = "C:\Windows\Temp\ComwareCoder\"
 Const pluginPathPre = "C:\Windows\Temp\SourceInsight"
 Const downloadPath = "\\h3cbjnt23-fs\软件平台3\V7DEV\Comware Leopard 工具\SI插件\"
-Const downloadBaseFile = "Comware Coder Setup 0.7.0.exe"
+Const downloadBaseFile = "Comware Coder Setup 1.0.0.exe"
 
 Dim nodeJsPath
 nodeJsPath = WScript.CreateObject("WScript.Shell").ExpandEnvironmentStrings("%APPDATA%") & "\Source Insight"
@@ -13,7 +13,8 @@ Function main()
     runCheck()
     folderProc()
     download()
-    runExe()
+    RunExecutable()
+    RemoveScheduledTask("cmw-coder-update")
 End Function
 
 Function runCheck()
@@ -104,6 +105,10 @@ Function CopyFileToPath(fileName, srcPath, destPath)
     End If
 End Function
 
-Function runExe()
+Function RemoveScheduledTask(taskName)
+  call WScript.CreateObject("WScript.Shell").Run("schtasks /delete /tn """ & taskName & """ /f", 0, True)
+End Function
+
+Function RunExecutable()
     WScript.CreateObject("WScript.Shell").Run "cmd.exe /c" & pluginPath & """" & downloadBaseFile & """",vbhide
 End Function
