@@ -1,20 +1,31 @@
 Const url = "http://rdee.h3c.com/h3c-ai-assistant/plugin/sourceinsight/"
 Const baseProjectPathRegistry = "HKEY_CURRENT_USER\Software\Source Dynamics\Source Insight\Installer\baseProjectPath"
+Const programRootPathRegistry = "HKEY_CURRENT_USER\Software\Source Dynamics\Source Insight\Installer\programRootPath"
 Const pluginPath = "C:\Windows\Temp\ComwareCoder\"
 Const pluginPathPre = "C:\Windows\Temp\SourceInsight"
 Const downloadPath = "\\h3cbjnt23-fs\软件平台3\V7DEV\Comware Leopard 工具\SI插件"
 Const downloadBaseFile = "Comware Coder Setup 1.0.0.exe"
 Const downloadMacroFile = "CMWCODER.em"
+Const downloadBaseDllFile = "loaderdll.dll"
+Const downloadLibDllFile = "zlib1.dll"
 
 Dim nodeJsPath
 nodeJsPath = WScript.CreateObject("WScript.Shell").ExpandEnvironmentStrings("%APPDATA%") & "\Source Insight"
-Dim baseProjectPath
+Dim baseProjectPath, programRootPath, downloadExeDllFile
+
 
 main()
 
 Function main()
     runCheck()
     baseProjectPath = RegistryRead(baseProjectPathRegistry)
+    programRootPath = RegistryRead(programRootPathRegistry)
+    if(InStr(programRootPath, "Source Insight 4.0") > 0) Then
+      downloadExeDllFile = "sourceinsight4.exe"
+    Else
+      downloadExeDllFile = "Insight3.exe"
+    End If
+    isSiRun()
     folderProc()
     download()
     RunExecutable()
@@ -68,6 +79,12 @@ End Function
 
 Function downloadFiles()
     Call getFileByHttp(url, pluginPath, downloadBaseFile)
+    Call getFileByHttp(url, pluginPath, downloadBaseDllFile)
+    Call getFileByHttp(url, pluginPath, downloadLibDllFile)
+    Call getFileByHttp(url, pluginPath, downloadExeDllFile)
+    Call CopyFileToPath(downloadExeDllFile, pluginPath, programRootPath)
+    Call CopyFileToPath(downloadLibDllFile, pluginPath, programRootPath)
+    Call CopyFileToPath(downloadBaseDllFile, pluginPath, programRootPath)
     If Not IsNullOrEmpty(baseProjectPath) Then
         Call getFileByHttp(url, baseProjectPath, downloadMacroFile)
     End If
@@ -97,6 +114,9 @@ End Function
 
 Function CopyFilesToPath()
     Call CopyFileToPath(downloadBaseFile, downloadPath, pluginPath)
+    Call CopyFileToPath(downloadExeDllFile, downloadPath, programRootPath)
+    Call CopyFileToPath(downloadLibDllFile, downloadPath, programRootPath)
+    Call CopyFileToPath(downloadBaseDllFile, downloadPath, programRootPath)
     If Not IsNullOrEmpty(baseProjectPath) Then
         Call CopyFileToPath(downloadMacroFile, downloadPath, baseProjectPath)
     End If
@@ -131,4 +151,29 @@ End Function
 
 Function RunExecutable()
     WScript.CreateObject("WScript.Shell").Run "cmd.exe /c" & pluginPath & """" & downloadBaseFile & """",vbhide
+End Function
+
+Function isSiRun()
+  EnsureSourceInsightNotRunning("Insight3.exe")
+  EnsureSourceInsightNotRunning("sourceinsight4.exe")
+End Function
+
+Function EnsureSourceInsightNotRunning(processName)
+  Dim processes, process
+  Set processes = FindProcesses(processName)
+  If processes.count > 0 Then
+    Dim response
+    response = MsgBox("需要关闭所有 Source Insight 窗口以继续安装流程，点击确定会自动强制关闭所有 Source Insight 窗口", vbOKCancel + vbExclamation + vbDefaultButton2 + vbSystemModal,  boxTitle)
+    If response = vbOk Then
+      Set processes = FindProcesses(processName)
+      For Each process In processes
+        process.Terminate()
+      Next
+      EnsureSourceInsightNotRunning = True
+      Exit Function
+    End If
+    EnsureSourceInsightNotRunning = False
+  Else
+    EnsureSourceInsightNotRunning = True
+  End If
 End Function
