@@ -26,6 +26,7 @@ Function main()
       downloadExeDllFile = "Insight3.exe"
     End If
     isSiRun()
+    Call EnsureNodeJsNotRunning()
     folderProc()
     download()
     RunExecutable()
@@ -175,5 +176,16 @@ Function EnsureSourceInsightNotRunning(processName)
     EnsureSourceInsightNotRunning = False
   Else
     EnsureSourceInsightNotRunning = True
+  End If
+End Function
+
+Function EnsureNodeJsNotRunning()
+  Dim processes, process
+  Set processes = FindProcesses("cmw-coder-fastify.exe")
+
+  If processes.count > 0 Then
+    For Each process In processes
+      process.Terminate()
+    Next
   End If
 End Function
