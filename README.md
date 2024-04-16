@@ -1,5 +1,9 @@
 # cmw-coder-macros
 
+## Deprecation Notice
+
+This repository is deprecated. Plese check [cmw-coder-proxy](https://github.com/cmw-coder/cmw-coder-proxy) and [cmw-coder-quasar](https://github.com/cmw-coder/cmw-coder-quasar)
+
 ## Design
 
 ```mermaid
